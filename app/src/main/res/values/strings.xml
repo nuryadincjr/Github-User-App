@@ -6,13 +6,15 @@
     <string name="github_user">GitHub User\'s</string>
     <string name="follow">2 followers · 1 following</string>
     <string name="company">Company</string>
-    <string name="repository">Repository</string>
+    <string name="repository">20 Repository</string>
     <string name="location">Location</string>
     <string name="share_profile">Share Profile</string>
     <string name="detail_user">Detail User</string>
     <string name="follow_info">%s followers · %s following</string>
     <string name="repositories">%s Repositories</string>
     <string name="github">https://github.com/%s</string>
+    <string name="tab_text_1">Followers</string>
+    <string name="tab_text_2">Following</string>
 
     <string-array name="username">
         <item>JakeWharton</item>
@@ -125,5 +127,7 @@
         <item>@drawable/user10</item>
         <item>@drawable/user11</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

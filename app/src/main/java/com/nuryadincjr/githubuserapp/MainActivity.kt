@@ -3,17 +3,19 @@ package com.nuryadincjr.githubuserapp
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
-import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.pojo.UserResponse
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val list = ArrayList<Users>()
+    private val mainViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,53 +27,38 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvUsers.setHasFixedSize(true)
 
-        list.addAll(listUsers)
-        showRecyclerList()
-    }
-
-    private val listUsers: ArrayList<Users>
-        get() {
-            val dataUsername = resources.getStringArray(R.array.username)
-            val dataName = resources.getStringArray(R.array.name)
-            val dataAvatar = resources.obtainTypedArray(R.array.avatar)
-            val dataFollowers = resources.getStringArray(R.array.followers)
-            val dataFollowing = resources.getStringArray(R.array.following)
-            val dataCompany = resources.getStringArray(R.array.company)
-            val dataLocation = resources.getStringArray(R.array.location)
-            val dataRepository = resources.getStringArray(R.array.repository)
-            val listUser = ArrayList<Users>()
-
-            for (i in dataName.indices) {
-                val user = Users(
-                    dataUsername[i], dataName[i],
-                    dataAvatar.getResourceId(i, -1), dataFollowers[i],
-                    dataFollowing[i], dataCompany[i], dataLocation[i], dataRepository[i]
-                )
-                listUser.add(user)
+        mainViewModel.apply {
+            userResponse.observe(this@MainActivity) {
+                showRecyclerList(it)
             }
 
-            dataAvatar.recycle()
-            return listUser
+            isLoading.observe(this@MainActivity) {
+                showLoading(it)
+            }
         }
+    }
 
-    private fun showRecyclerList() {
-        if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.rvUsers.layoutManager = GridLayoutManager(this, 2)
-        } else {
-            binding.rvUsers.layoutManager = LinearLayoutManager(this)
-        }
+    private fun showRecyclerList(list: List<UserResponse>) {
+        binding.rvUsers.layoutManager =
+            if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                GridLayoutManager(this, 2)
+            } else LinearLayoutManager(this)
 
         val listUsersAdapter = ListUsersAdapter(list)
         binding.rvUsers.adapter = listUsersAdapter
 
         listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: Users) {
+            override fun onItemClicked(data: UserResponse) {
                 onStartActivity(data)
             }
         })
     }
 
-    private fun onStartActivity(user: Users) {
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun onStartActivity(user: UserResponse) {
         val detailIntent = Intent(this, DetailUserActivity::class.java)
         detailIntent.putExtra(DetailUserActivity.DATA_USER, user)
         startActivity(detailIntent)

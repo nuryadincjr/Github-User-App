@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayoutMediator
+import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
-import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.pojo.UserResponse
 
 class DetailUserActivity : AppCompatActivity() {
 
@@ -22,10 +24,21 @@ class DetailUserActivity : AppCompatActivity() {
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = intent.getParcelableExtra<Users>(DATA_USER)
+        val sectionsPagerAdapter = SectionsPagerAdapter(this)
+        sectionsPagerAdapter.appName = resources.getString(R.string.app_name)
+
+        binding.apply {
+            viewPager.adapter = sectionsPagerAdapter
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                tab.text = resources.getString(TAB_TITLES[position])
+            }.attach()
+        }
+        supportActionBar?.elevation = 0f
+
+        val user = intent.getParcelableExtra<UserResponse>(DATA_USER)
 
         Glide.with(this)
-            .load(user?.avatar)
+            .load(user?.avatarUrl)
             .circleCrop()
             .into(binding.ivAvatar)
 
@@ -34,10 +47,10 @@ class DetailUserActivity : AppCompatActivity() {
             "${user?.followers}",
             "${user?.following}"
         )
-        val repositories = String.format(getString(R.string.repositories), "${user?.repository}")
+        val repositories = String.format(getString(R.string.repositories), "${user?.reposUrl}")
 
         binding.apply {
-            tvUsername.text = user?.username
+            tvUsername.text = user?.login
             tvName.text = user?.name
             tvFollowers.text = followInfo
             tvCompany.text = user?.company
@@ -45,7 +58,7 @@ class DetailUserActivity : AppCompatActivity() {
             tvRepository.text = repositories
 
             btnShare.setOnClickListener {
-                val gitHubUserUrl = String.format(getString(R.string.github), "${user?.username}")
+                val gitHubUserUrl = String.format(getString(R.string.github), "${user?.login}")
                 val shareUserIntent = Intent(Intent.ACTION_SEND)
                     .putExtra(Intent.EXTRA_TEXT, gitHubUserUrl)
                     .setType("text/plain")
@@ -61,5 +74,9 @@ class DetailUserActivity : AppCompatActivity() {
 
     companion object {
         const val DATA_USER = "data_user"
+        private val TAB_TITLES = intArrayOf(
+            R.string.tab_text_1,
+            R.string.tab_text_2
+        )
     }
 }

@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
-import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.pojo.UserResponse
 
-class ListUsersAdapter(private val listUsers: ArrayList<Users>) :
+class ListUsersAdapter(private val listUsers: List<UserResponse>) :
     RecyclerView.Adapter<ListUsersAdapter.ListViewHolder>() {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
@@ -18,13 +18,12 @@ class ListUsersAdapter(private val listUsers: ArrayList<Users>) :
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (username, name, avatar) = listUsers[position]
 
-        holder.binding.tvUsername.text = username
-        holder.binding.tvName.text = name
+        holder.binding.tvUsername.text = listUsers[position].login
+        holder.binding.tvName.text = listUsers[position].name
 
         Glide.with(holder.itemView.context)
-            .load(avatar)
+            .load(listUsers[position].avatarUrl)
             .circleCrop()
             .into(holder.binding.ivAvatar)
 
@@ -40,6 +39,6 @@ class ListUsersAdapter(private val listUsers: ArrayList<Users>) :
     class ListViewHolder(var binding: ItemRowUserBinding) : RecyclerView.ViewHolder(binding.root)
 
     interface OnItemClickCallback {
-        fun onItemClicked(data: Users)
+        fun onItemClicked(data: UserResponse)
     }
 }
