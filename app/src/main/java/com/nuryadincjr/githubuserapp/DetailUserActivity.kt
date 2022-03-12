@@ -47,7 +47,7 @@ class DetailUserActivity : AppCompatActivity() {
             "${user?.followers}",
             "${user?.following}"
         )
-        val repositories = String.format(getString(R.string.repositories), "${user?.reposUrl}")
+        val repositories = String.format(getString(R.string.repositories), "${user?.publicRepos}")
 
         binding.apply {
             tvUsername.text = user?.login
