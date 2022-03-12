@@ -12,14 +12,11 @@ class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
 
-    companion object {
-        const val DATA_USER = "data user"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_user)
-        supportActionBar?.title = "Detail User"
+
+        supportActionBar?.title = resources.getString(R.string.detail_user)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
@@ -32,27 +29,37 @@ class DetailUserActivity : AppCompatActivity() {
             .circleCrop()
             .into(binding.ivAvatar)
 
-        val followInfo = "${user?.followers} followers · ${user?.following} following"
-        val repositories = "${user?.repository} Repositories"
+        val followInfo = String.format(
+            getString(R.string.follow_info),
+            "${user?.followers}",
+            "${user?.following}"
+        )
+        val repositories = String.format(getString(R.string.repositories), "${user?.repository}")
 
-        binding.tvUsername.text = user?.username
-        binding.tvName.text = user?.name
-        binding.tvFollowers.text = followInfo
-        binding.tvCompany.text = user?.company
-        binding.tvLocation.text = user?.location
-        binding.tvRepository.text = repositories
+        binding.apply {
+            tvUsername.text = user?.username
+            tvName.text = user?.name
+            tvFollowers.text = followInfo
+            tvCompany.text = user?.company
+            tvLocation.text = user?.location
+            tvRepository.text = repositories
 
-        binding.btnShare.setOnClickListener {
-            val gitHubUserUrl = "https://github.com/${user?.username}"
-            val shareUserIntent = Intent(Intent.ACTION_SEND)
-                .putExtra(Intent.EXTRA_TEXT, gitHubUserUrl)
-                .setType("text/plain")
-            startActivity(shareUserIntent)
+            btnShare.setOnClickListener {
+                val gitHubUserUrl = String.format(getString(R.string.github), "${user?.username}")
+                val shareUserIntent = Intent(Intent.ACTION_SEND)
+                    .putExtra(Intent.EXTRA_TEXT, gitHubUserUrl)
+                    .setType("text/plain")
+                startActivity(shareUserIntent)
+            }
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) onBackPressed()
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        const val DATA_USER = "data_user"
     }
 }

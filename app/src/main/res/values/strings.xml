@@ -9,6 +9,10 @@
     <string name="repository">Repository</string>
     <string name="location">Location</string>
     <string name="share_profile">Share Profile</string>
+    <string name="detail_user">Detail User</string>
+    <string name="follow_info">%s followers · %s following</string>
+    <string name="repositories">%s Repositories</string>
+    <string name="github">https://github.com/%s</string>
 
     <string-array name="username">
         <item>JakeWharton</item>

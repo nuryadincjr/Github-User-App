@@ -7,7 +7,8 @@ import com.bumptech.glide.Glide
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
 
-class ListUsersAdapter(private val listUsers: ArrayList<Users>) : RecyclerView.Adapter<ListUsersAdapter.ListViewHolder>() {
+class ListUsersAdapter(private val listUsers: ArrayList<Users>) :
+    RecyclerView.Adapter<ListUsersAdapter.ListViewHolder>() {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 

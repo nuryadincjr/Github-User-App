@@ -1,6 +1,5 @@
 package com.nuryadincjr.githubuserapp
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -19,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        supportActionBar?.title = "Github User's"
+        supportActionBar?.title = resources.getString(R.string.github_user)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -31,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val listUsers: ArrayList<Users>
-        @SuppressLint("Recycle")
         get() {
             val dataUsername = resources.getStringArray(R.array.username)
             val dataName = resources.getStringArray(R.array.name)
@@ -42,12 +40,17 @@ class MainActivity : AppCompatActivity() {
             val dataLocation = resources.getStringArray(R.array.location)
             val dataRepository = resources.getStringArray(R.array.repository)
             val listUser = ArrayList<Users>()
+
             for (i in dataName.indices) {
-                val user = Users(dataUsername[i], dataName[i],
+                val user = Users(
+                    dataUsername[i], dataName[i],
                     dataAvatar.getResourceId(i, -1), dataFollowers[i],
-                    dataFollowing[i], dataCompany[i], dataLocation[i], dataRepository[i])
+                    dataFollowing[i], dataCompany[i], dataLocation[i], dataRepository[i]
+                )
                 listUser.add(user)
             }
+
+            dataAvatar.recycle()
             return listUser
         }
 
