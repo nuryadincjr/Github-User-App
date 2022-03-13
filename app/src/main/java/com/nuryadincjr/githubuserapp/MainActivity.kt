@@ -1,5 +1,7 @@
 package com.nuryadincjr.githubuserapp
 
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -7,17 +9,20 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
+import com.nuryadincjr.githubuserapp.viewModel.SearchViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel by viewModels<MainViewModel>()
+    private val mainViewModel: MainViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +32,42 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.rvUsers.setHasFixedSize(true)
-
         mainViewModel.apply {
-            users.observe(this@MainActivity) {
+            userResponseItem.observe(this@MainActivity) {
+                showRecyclerList(it)
+            }
+
+            isLoading.observe(this@MainActivity) {
+                showLoading(it)
+            }
+
+            statusCode.observe(this@MainActivity) {
+                it.getContentIfNotHandled()?.let { respond ->
+                    Toast.makeText(this@MainActivity, respond, Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+
+        searchViewModel.apply {
+            val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            binding.apply {
+                svUser.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+                svUser.queryHint = resources.getString(R.string.search_hint)
+                svUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        searchUsers(query.toString())
+                        svUser.clearFocus()
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        return false
+                    }
+                })
+            }
+
+            userResponseItem.observe(this@MainActivity) {
                 showRecyclerList(it)
             }
 
@@ -48,6 +85,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showRecyclerList(list: List<Users>) {
+        binding.rvUsers.setHasFixedSize(true)
         binding.rvUsers.layoutManager =
             if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(this, 2)
