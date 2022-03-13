@@ -12,8 +12,8 @@ import retrofit2.Response
 
 class FollowViewModel : ViewModel() {
 
-    private var followersArrayListItem: ArrayList<Users> = ArrayList()
-    private var followingArrayListItem: ArrayList<Users> = ArrayList()
+    private var followersArrayListItem = ArrayList<Users>()
+    private var followingArrayListItem = ArrayList<Users>()
 
     private val _followingResponse = MutableLiveData<List<UsersResponse>>()
     val followingResponse: LiveData<List<UsersResponse>> = _followingResponse

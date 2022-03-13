@@ -14,7 +14,7 @@ import retrofit2.Response
 
 class MainViewModel : ViewModel() {
 
-    private var usersArrayListItem: ArrayList<Users> = ArrayList()
+    private var usersArrayListItem = ArrayList<Users>()
 
     private val _usersResponse = MutableLiveData<List<UsersResponse>>()
     val usersResponse: LiveData<List<UsersResponse>> = _usersResponse

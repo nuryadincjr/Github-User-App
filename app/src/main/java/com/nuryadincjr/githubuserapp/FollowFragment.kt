@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.adapters.ListFollowAdapter
@@ -20,7 +20,7 @@ class FollowFragment : Fragment() {
 
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
-    private lateinit var followViewModel: FollowViewModel
+    private val followViewModel by viewModels<FollowViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,8 +32,6 @@ class FollowFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        followViewModel = ViewModelProvider(this).get(FollowViewModel::class.java)
 
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
         val login = arguments?.getString(ARG_LOGIN)
