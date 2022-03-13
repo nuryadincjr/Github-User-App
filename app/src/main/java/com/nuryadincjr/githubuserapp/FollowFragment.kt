@@ -1,17 +1,26 @@
 package com.nuryadincjr.githubuserapp
 
+import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.nuryadincjr.githubuserapp.adapters.ListFollowAdapter
 import com.nuryadincjr.githubuserapp.databinding.FragmentFollowBinding
+import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
 
 class FollowFragment : Fragment() {
 
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
+    private lateinit var followViewModel: FollowViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,9 +33,61 @@ class FollowFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        followViewModel = ViewModelProvider(this).get(FollowViewModel::class.java)
+
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
-        val name = arguments?.getString(ARG_NAME)
-        Toast.makeText(context, "$name", Toast.LENGTH_SHORT).show()
+        val login = arguments?.getString(ARG_LOGIN)
+
+        followViewModel.apply {
+            if (index == 0) {
+                findFollowers(login.toString())
+                followersResponseItem.observe(viewLifecycleOwner) {
+                    showRecyclerList(it)
+                }
+            } else {
+                findFollowing(login.toString())
+                followingResponseItem.observe(viewLifecycleOwner) {
+                    showRecyclerList(it)
+                }
+            }
+
+            isLoading.observe(viewLifecycleOwner) {
+                showLoading(it)
+            }
+
+            statusCode.observe(viewLifecycleOwner) {
+                it.getContentIfNotHandled()?.let { respond ->
+                    Toast.makeText(context, respond, Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
+
+    private fun showRecyclerList(list: List<Users>) {
+        binding?.rvFollow?.layoutManager =
+            if (context?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                GridLayoutManager(context, 2)
+            } else LinearLayoutManager(context)
+
+        val listUsersAdapter = ListFollowAdapter(list)
+        binding?.rvFollow?.adapter = listUsersAdapter
+
+        listUsersAdapter.setOnItemClickCallback(object : ListFollowAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: Users) {
+                onStartActivity(data)
+            }
+        })
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding?.progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun onStartActivity(usersItem: Users) {
+        val detailIntent = Intent(context, DetailUserActivity::class.java)
+        detailIntent.putExtra(DetailUserActivity.DATA_USER, usersItem)
+        startActivity(detailIntent)
     }
 
     override fun onDestroy() {
@@ -36,6 +97,6 @@ class FollowFragment : Fragment() {
 
     companion object {
         const val ARG_SECTION_NUMBER = "section_number"
-        const val ARG_NAME = "app_name"
+        const val ARG_LOGIN = "login"
     }
 }

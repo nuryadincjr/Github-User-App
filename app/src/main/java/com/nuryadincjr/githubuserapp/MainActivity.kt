@@ -4,13 +4,15 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
-import com.nuryadincjr.githubuserapp.pojo.UserResponse
+import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,17 +30,24 @@ class MainActivity : AppCompatActivity() {
         binding.rvUsers.setHasFixedSize(true)
 
         mainViewModel.apply {
-            userResponse.observe(this@MainActivity) {
+            users.observe(this@MainActivity) {
                 showRecyclerList(it)
             }
 
             isLoading.observe(this@MainActivity) {
                 showLoading(it)
             }
+
+            statusCode.observe(this@MainActivity) {
+                it.getContentIfNotHandled()?.let { respond ->
+                    Toast.makeText(this@MainActivity, respond, Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
         }
     }
 
-    private fun showRecyclerList(list: List<UserResponse>) {
+    private fun showRecyclerList(list: List<Users>) {
         binding.rvUsers.layoutManager =
             if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(this, 2)
@@ -48,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         binding.rvUsers.adapter = listUsersAdapter
 
         listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: UserResponse) {
+            override fun onItemClicked(data: Users) {
                 onStartActivity(data)
             }
         })
@@ -58,9 +67,9 @@ class MainActivity : AppCompatActivity() {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
-    private fun onStartActivity(user: UserResponse) {
+    private fun onStartActivity(usersItem: Users) {
         val detailIntent = Intent(this, DetailUserActivity::class.java)
-        detailIntent.putExtra(DetailUserActivity.DATA_USER, user)
+        detailIntent.putExtra(DetailUserActivity.DATA_USER, usersItem)
         startActivity(detailIntent)
     }
 }

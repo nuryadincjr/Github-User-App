@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
-import com.nuryadincjr.githubuserapp.pojo.UserResponse
+import com.nuryadincjr.githubuserapp.pojo.Users
 
 class DetailUserActivity : AppCompatActivity() {
 
@@ -18,24 +18,28 @@ class DetailUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_user)
 
-        supportActionBar?.title = resources.getString(R.string.detail_user)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.apply {
+            title = resources.getString(R.string.detail_user)
+            this.setDisplayHomeAsUpEnabled(true)
+            elevation = 0f
+        }
 
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
-        sectionsPagerAdapter.appName = resources.getString(R.string.app_name)
+        val user = intent.getParcelableExtra<Users>(DATA_USER)
+        sectionsPagerAdapter.login = user?.login.toString()
 
         binding.apply {
             viewPager.adapter = sectionsPagerAdapter
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = resources.getString(TAB_TITLES[position])
+                if(position == 0) {
+                    tab.orCreateBadge.number = user?.followers!!
+                }else tab.orCreateBadge.number = user?.following!!
             }.attach()
         }
-        supportActionBar?.elevation = 0f
-
-        val user = intent.getParcelableExtra<UserResponse>(DATA_USER)
 
         Glide.with(this)
             .load(user?.avatarUrl)
@@ -47,7 +51,11 @@ class DetailUserActivity : AppCompatActivity() {
             "${user?.followers}",
             "${user?.following}"
         )
-        val repositories = String.format(getString(R.string.repositories), "${user?.publicRepos}")
+
+        val repositories = String.format(
+            getString(R.string.repositories),
+            "${user?.publicRepos}"
+        )
 
         binding.apply {
             tvUsername.text = user?.login
@@ -56,6 +64,7 @@ class DetailUserActivity : AppCompatActivity() {
             tvCompany.text = user?.company
             tvLocation.text = user?.location
             tvRepository.text = repositories
+
 
             btnShare.setOnClickListener {
                 val gitHubUserUrl = String.format(getString(R.string.github), "${user?.login}")

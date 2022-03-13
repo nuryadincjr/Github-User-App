@@ -8,7 +8,7 @@ import com.nuryadincjr.githubuserapp.FollowFragment
 
 class SectionsPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
 
-    var appName: String = ""
+    var login: String = ""
 
     override fun getItemCount(): Int {
         return 2
@@ -16,9 +16,10 @@ class SectionsPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(a
 
     override fun createFragment(position: Int): Fragment {
         val fragment = FollowFragment()
+
         fragment.arguments = Bundle().apply {
-            putInt(FollowFragment.ARG_SECTION_NUMBER, position + 1)
-            putString(FollowFragment.ARG_NAME, appName)
+            putInt(FollowFragment.ARG_SECTION_NUMBER, position)
+            putString(FollowFragment.ARG_LOGIN, login)
         }
         return fragment
     }

@@ -1,17 +1,34 @@
 package com.nuryadincjr.githubuserapp.interfaces
 
-import com.nuryadincjr.githubuserapp.pojo.UserResponse
-import com.nuryadincjr.githubuserapp.pojo.UsersResponseItem
+import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.pojo.UsersResponse
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 
 interface ApiService {
-    @GET("users")
-    fun getUsers(): Call<List<UsersResponseItem>>
 
-    @GET("users/{login}")
-    fun getUserLogin(
+    @Headers("Authorization: token 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")
+    @GET("users")
+    fun getUsers(
+    ): Call<List<UsersResponse>>
+
+    @Headers("Authorization: token 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")
+    @GET("users/{login}/followers")
+    fun getFollowers(
         @Path("login") login: String
-    ): Call<UserResponse>
+    ): Call<List<UsersResponse>>
+
+    @Headers("Authorization: token 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")
+    @GET("users/{login}/following")
+    fun getFollowing(
+        @Path("login") login: String
+    ): Call<List<UsersResponse>>
+
+    @Headers("Authorization: token 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")
+    @GET("users/{login}")
+    fun getUser(
+        @Path("login") login: String
+    ): Call<Users>
 }
