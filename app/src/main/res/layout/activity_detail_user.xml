@@ -42,9 +42,8 @@
         android:id="@+id/btn_share"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        style="@style/ButtonGeneral"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:drawableEnd="@drawable/ic_outline_share"
         android:text="@string/share_profile"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,10 +99,16 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_location" />
+        android:layout_marginTop="8dp"
+        android:background="@color/teal_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_location"
+        app:tabIndicatorColor="@color/teal_light_primary"
+        app:tabIndicatorGravity="bottom"
+        app:tabTextColor="@color/white" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"

@@ -11,6 +11,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
+import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
 import com.nuryadincjr.githubuserapp.viewModel.UserViewModel
 
 class DetailUserActivity : AppCompatActivity() {
@@ -102,13 +104,5 @@ class DetailUserActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) onBackPressed()
         return super.onOptionsItemSelected(item)
-    }
-
-    companion object {
-        const val DATA_USER = "data_user"
-        private val TAB_TITLES = intArrayOf(
-            R.string.tab_text_1,
-            R.string.tab_text_2
-        )
     }
 }

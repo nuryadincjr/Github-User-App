@@ -1,4 +1,4 @@
-package com.nuryadincjr.githubuserapp.pojo
+package com.nuryadincjr.githubuserapp.util
 
 open class Event<out T>(private val content: T) {
 

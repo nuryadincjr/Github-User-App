@@ -15,14 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var listUsersAdapter: ListUsersAdapter
     private val mainViewModel: MainViewModel by viewModels()
-    private var listUsers: ArrayList<Users> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +33,11 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.apply {
             userResponseItem.observe(this@MainActivity) {
-                listUsers = it as ArrayList<Users>
-                showRecyclerList()
+                showRecyclerList(it)
+            }
+
+            searchResponseItem.observe(this@MainActivity) {
+                showRecyclerList(it)
             }
 
             val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -45,7 +47,6 @@ class MainActivity : AppCompatActivity() {
                 svUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         if (query != null) {
-                            listUsers.clear()
                             searchUsers(query)
                             svUser.clearFocus()
                         }
@@ -71,14 +72,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showRecyclerList() {
+    private fun showRecyclerList(list: List<Users>) {
         binding.rvUsers.setHasFixedSize(true)
         binding.rvUsers.layoutManager =
             if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(this, 2)
             } else LinearLayoutManager(this)
 
-        listUsersAdapter = ListUsersAdapter(listUsers)
+        val listUsersAdapter = ListUsersAdapter(list)
         binding.rvUsers.adapter = listUsersAdapter
         listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
             override fun onItemClicked(data: Users) {
@@ -93,7 +94,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onStartActivity(usersItem: Users) {
         val detailIntent = Intent(this, DetailUserActivity::class.java)
-        detailIntent.putExtra(DetailUserActivity.DATA_USER, usersItem)
+        detailIntent.putExtra(DATA_USER, usersItem)
         startActivity(detailIntent)
     }
 }
