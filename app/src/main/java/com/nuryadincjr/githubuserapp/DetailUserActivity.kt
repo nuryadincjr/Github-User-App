@@ -3,16 +3,20 @@ package com.nuryadincjr.githubuserapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.viewModel.UserViewModel
 
 class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,20 +31,39 @@ class DetailUserActivity : AppCompatActivity() {
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sectionsPagerAdapter = SectionsPagerAdapter(this)
         val user = intent.getParcelableExtra<Users>(DATA_USER)
+
+        subscribe(user)
+    }
+
+    private fun subscribe(user: Users?) {
+        val elapsedTimeObserver = Observer<Users?> {
+            sectionsPager(it)
+            setUserData(it)
+        }
+
+        userViewModel.apply {
+            user?.let { setUser(it) }
+            getUser().observe(this@DetailUserActivity, elapsedTimeObserver)
+        }
+    }
+
+    private fun sectionsPager(user: Users?) {
+        val sectionsPagerAdapter = SectionsPagerAdapter(this)
         sectionsPagerAdapter.login = user?.login.toString()
 
         binding.apply {
             viewPager.adapter = sectionsPagerAdapter
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = resources.getString(TAB_TITLES[position])
-                if(position == 0) {
+                if (position == 0) {
                     tab.orCreateBadge.number = user?.followers!!
-                }else tab.orCreateBadge.number = user?.following!!
+                } else tab.orCreateBadge.number = user?.following!!
             }.attach()
         }
+    }
 
+    private fun setUserData(user: Users?) {
         Glide.with(this)
             .load(user?.avatarUrl)
             .circleCrop()

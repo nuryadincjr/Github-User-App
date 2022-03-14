@@ -44,5 +44,4 @@ interface ApiService {
         @Query("sort") sort: String? = null,
         @Query("order") order: String? = null,
     ): Call<SearchUsersResponse>
-
 }

@@ -38,12 +38,10 @@ class FollowFragment : Fragment() {
 
         followViewModel.apply {
             if (index == 0) {
-                findFollowers(login.toString())
                 followersResponseItem.observe(viewLifecycleOwner) {
                     showRecyclerList(it)
                 }
             } else {
-                findFollowing(login.toString())
                 followingResponseItem.observe(viewLifecycleOwner) {
                     showRecyclerList(it)
                 }

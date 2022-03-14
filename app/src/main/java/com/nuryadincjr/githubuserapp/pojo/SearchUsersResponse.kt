@@ -11,10 +11,10 @@ data class SearchUsersResponse(
 	val incompleteResults: Boolean? = null,
 
 	@field:SerializedName("items")
-	val items: List<ItemsItem?>? = null
+	val searchItems: List<ItemsSearchItem?>? = null
 )
 
-data class ItemsItem(
+data class ItemsSearchItem(
 
 	@field:SerializedName("gists_url")
 	val gistsUrl: String? = null,

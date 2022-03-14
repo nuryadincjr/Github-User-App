@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nuryadincjr.githubuserapp.config.ApiConfig
-import com.nuryadincjr.githubuserapp.pojo.*
+import com.nuryadincjr.githubuserapp.pojo.Event
+import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.pojo.UsersResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,7 +35,14 @@ class FollowViewModel : ViewModel() {
     private val _statusCode = MutableLiveData<Event<String>>()
     val statusCode: LiveData<Event<String>> = _statusCode
 
-    fun findFollowers(login: String) {
+    private val quray = "nuryadincjr"
+
+    init {
+        findFollowers(quray)
+        findFollowing(quray)
+    }
+
+    private fun findFollowers(login: String) {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getFollowers(login)
         client.enqueue(object : Callback<List<UsersResponse>> {
@@ -50,19 +59,19 @@ class FollowViewModel : ViewModel() {
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
-                    _statusCode.value = MainViewModel.responseCode(response)
+                    _statusCode.value = MainViewModel.responseStatus(response)
                 }
             }
 
             override fun onFailure(call: Call<List<UsersResponse>>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(TAG, "onFailure: ${t.message}")
-                _statusCode.value = MainViewModel.throwableCode(t)
+                _statusCode.value = MainViewModel.throwableStatus(t)
             }
         })
     }
 
-    fun findFollowing(login: String) {
+    private fun findFollowing(login: String) {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getFollowing(login)
         client.enqueue(object : Callback<List<UsersResponse>> {
@@ -79,14 +88,14 @@ class FollowViewModel : ViewModel() {
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
-                    _statusCode.value = MainViewModel.responseCode(response)
+                    _statusCode.value = MainViewModel.responseStatus(response)
                 }
             }
 
             override fun onFailure(call: Call<List<UsersResponse>>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(TAG, "onFailure: ${t.message}")
-                _statusCode.value = MainViewModel.throwableCode(t)
+                _statusCode.value = MainViewModel.throwableStatus(t)
             }
         })
     }
@@ -106,14 +115,14 @@ class FollowViewModel : ViewModel() {
                     _followingResponseItem.value = followingArrayListItem
                 } else {
                     Log.e(TAG, "onFailure: ${responseItem.message()}")
-                    _statusCode.value = MainViewModel.responseCode(responseItem)
+                    _statusCode.value = MainViewModel.responseStatus(responseItem)
                 }
             }
 
             override fun onFailure(call: Call<Users>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(TAG, "onFailure: ${t.message}")
-                _statusCode.value = MainViewModel.throwableCode(t)
+                _statusCode.value = MainViewModel.throwableStatus(t)
             }
         })
     }
@@ -133,14 +142,14 @@ class FollowViewModel : ViewModel() {
                     _followersResponseItem.value = followersArrayListItem
                 } else {
                     Log.e(TAG, "onFailure: ${responseItem.message()}")
-                    _statusCode.value = MainViewModel.responseCode(responseItem)
+                    _statusCode.value = MainViewModel.responseStatus(responseItem)
                 }
             }
 
             override fun onFailure(call: Call<Users>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(TAG, "onFailure: ${t.message}")
-                _statusCode.value = MainViewModel.throwableCode(t)
+                _statusCode.value = MainViewModel.throwableStatus(t)
             }
         })
     }

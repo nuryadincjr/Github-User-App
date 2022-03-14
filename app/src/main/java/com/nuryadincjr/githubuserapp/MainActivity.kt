@@ -16,14 +16,12 @@ import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
-import com.nuryadincjr.githubuserapp.viewModel.SearchViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var listUsersAdapter: ListUsersAdapter
     private val mainViewModel: MainViewModel by viewModels()
-    private val searchViewModel: SearchViewModel by viewModels()
     private var listUsers: ArrayList<Users> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,28 +38,13 @@ class MainActivity : AppCompatActivity() {
                 showRecyclerList()
             }
 
-            isLoading.observe(this@MainActivity) {
-                showLoading(it)
-            }
-
-            statusCode.observe(this@MainActivity) {
-                it.getContentIfNotHandled()?.let { respond ->
-                    Toast.makeText(this@MainActivity, respond, Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
-
-        searchViewModel.apply {
             val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
             binding.apply {
                 svUser.setSearchableInfo(searchManager.getSearchableInfo(componentName))
                 svUser.queryHint = resources.getString(R.string.search_hint)
                 svUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        if (query.isNullOrEmpty()) {
-                            return true
-                        } else {
+                        if (query != null) {
                             listUsers.clear()
                             searchUsers(query)
                             svUser.clearFocus()
@@ -73,11 +56,6 @@ class MainActivity : AppCompatActivity() {
                         return false
                     }
                 })
-            }
-
-            userResponseItem.observe(this@MainActivity) {
-                listUsers = it as ArrayList<Users>
-                showRecyclerList()
             }
 
             isLoading.observe(this@MainActivity) {
