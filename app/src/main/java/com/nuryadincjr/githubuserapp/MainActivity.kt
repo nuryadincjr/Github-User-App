@@ -21,8 +21,10 @@ import com.nuryadincjr.githubuserapp.viewModel.SearchViewModel
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var listUsersAdapter: ListUsersAdapter
     private val mainViewModel: MainViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
+    private var listUsers: ArrayList<Users> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.apply {
             userResponseItem.observe(this@MainActivity) {
-                showRecyclerList(it)
+                listUsers = it as ArrayList<Users>
+                showRecyclerList()
             }
 
             isLoading.observe(this@MainActivity) {
@@ -56,8 +59,13 @@ class MainActivity : AppCompatActivity() {
                 svUser.queryHint = resources.getString(R.string.search_hint)
                 svUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        searchUsers(query.toString())
-                        svUser.clearFocus()
+                        if (query.isNullOrEmpty()) {
+                            return true
+                        } else {
+                            listUsers.clear()
+                            searchUsers(query)
+                            svUser.clearFocus()
+                        }
                         return true
                     }
 
@@ -68,7 +76,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             userResponseItem.observe(this@MainActivity) {
-                showRecyclerList(it)
+                listUsers = it as ArrayList<Users>
+                showRecyclerList()
             }
 
             isLoading.observe(this@MainActivity) {
@@ -84,16 +93,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showRecyclerList(list: List<Users>) {
+    private fun showRecyclerList() {
         binding.rvUsers.setHasFixedSize(true)
         binding.rvUsers.layoutManager =
             if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(this, 2)
             } else LinearLayoutManager(this)
 
-        val listUsersAdapter = ListUsersAdapter(list)
+        listUsersAdapter = ListUsersAdapter(listUsers)
         binding.rvUsers.adapter = listUsersAdapter
-
         listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
             override fun onItemClicked(data: Users) {
                 onStartActivity(data)
