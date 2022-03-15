@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.R
@@ -57,14 +56,12 @@ class DetailUserActivity : AppCompatActivity() {
     }
 
     private fun subscribe(user: Users?) {
-        val elapsedTimeObserver = Observer<Users?> {
-            sectionsPager(it)
-            setUserData(it)
-        }
-
         userViewModel.apply {
             user?.let { setUser(it) }
-            getUser().observe(this@DetailUserActivity, elapsedTimeObserver)
+            getUser().observe(this@DetailUserActivity) {
+                sectionsPager(it)
+                setUserData(it)
+            }
         }
     }
 
