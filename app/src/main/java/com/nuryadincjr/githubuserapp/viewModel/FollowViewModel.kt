@@ -5,19 +5,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nuryadincjr.githubuserapp.config.ApiConfig
-import com.nuryadincjr.githubuserapp.util.Event
 import com.nuryadincjr.githubuserapp.pojo.Users
 import com.nuryadincjr.githubuserapp.pojo.UsersResponse
 import com.nuryadincjr.githubuserapp.util.Constant.responseStatus
 import com.nuryadincjr.githubuserapp.util.Constant.throwableStatus
+import com.nuryadincjr.githubuserapp.util.Event
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FollowViewModel : ViewModel() {
+class FollowViewModel(login: String) : ViewModel() {
 
     private val service = ApiConfig.getApiService()
-    private var usersArrayListItem: ArrayList<Users>? = null
+
+    private var followersArrayListItem: ArrayList<Users>? = null
+    private var followingArrayListItem: ArrayList<Users>? = null
 
     private val _followingResponse = MutableLiveData<List<UsersResponse>>()
     val followingResponse: LiveData<List<UsersResponse>> = _followingResponse
@@ -25,8 +27,11 @@ class FollowViewModel : ViewModel() {
     private val _followersResponse = MutableLiveData<List<UsersResponse>>()
     val followersResponse: LiveData<List<UsersResponse>> = _followersResponse
 
-    private val _userResponseItem = MutableLiveData<List<Users>>()
-    val userResponseItem: LiveData<List<Users>> = _userResponseItem
+    private val _followersResponseItem = MutableLiveData<List<Users>>()
+    val followersResponseItem: LiveData<List<Users>> = _followersResponseItem
+
+    private val _followingResponseItem = MutableLiveData<List<Users>>()
+    val followingResponseItem: LiveData<List<Users>> = _followingResponseItem
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -34,7 +39,12 @@ class FollowViewModel : ViewModel() {
     private val _statusCode = MutableLiveData<Event<String>>()
     val statusCode: LiveData<Event<String>> = _statusCode
 
-    fun findFollowers(login: String) {
+    init {
+        findFollowers(login)
+        findFollowing(login)
+    }
+
+    private fun findFollowers(login: String) {
         _isLoading.value = true
         service.getFollowers(login).enqueue(object : Callback<List<UsersResponse>> {
             override fun onResponse(
@@ -44,10 +54,10 @@ class FollowViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     _followersResponse.value = response.body()
-                    usersArrayListItem = ArrayList()
+                    followersArrayListItem = ArrayList()
 
                     for (i in 0 until followersResponse.value?.size!!) {
-                        findUser(followersResponse.value?.get(i)?.login.toString())
+                        findUser(followersResponse.value?.get(i)?.login.toString(), STAT_FOLLOWERS)
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
@@ -63,7 +73,7 @@ class FollowViewModel : ViewModel() {
         })
     }
 
-    fun findFollowing(login: String) {
+    private fun findFollowing(login: String) {
         _isLoading.value = true
         service.getFollowing(login).enqueue(object : Callback<List<UsersResponse>> {
             override fun onResponse(
@@ -73,10 +83,10 @@ class FollowViewModel : ViewModel() {
                 _isLoading.value = false
                 if (response.isSuccessful) {
                     _followingResponse.value = response.body()
-                    usersArrayListItem = ArrayList()
+                    followingArrayListItem = ArrayList()
 
                     for (i in 0 until followingResponse.value?.size!!) {
-                        findUser(followingResponse.value?.get(i)?.login.toString())
+                        findUser(followingResponse.value?.get(i)?.login.toString(), STAT_FOLLOWING)
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
@@ -92,7 +102,7 @@ class FollowViewModel : ViewModel() {
         })
     }
 
-    private fun findUser(login: String) {
+    private fun findUser(login: String, statement: String) {
         _isLoading.value = true
         service.getUser(login).enqueue(object : Callback<Users> {
             override fun onResponse(
@@ -101,8 +111,13 @@ class FollowViewModel : ViewModel() {
             ) {
                 _isLoading.value = false
                 if (responseItem.isSuccessful) {
-                    responseItem.body()?.let { usersArrayListItem?.add(it) }
-                    _userResponseItem.value = usersArrayListItem!!
+                    if (statement == STAT_FOLLOWERS) {
+                        responseItem.body()?.let { followersArrayListItem?.add(it) }
+                        _followersResponseItem.value = followersArrayListItem!!
+                    } else {
+                        responseItem.body()?.let { followingArrayListItem?.add(it) }
+                        _followingResponseItem.value = followingArrayListItem!!
+                    }
                 } else {
                     Log.e(TAG, "onFailure: ${responseItem.message()}")
                     _statusCode.value = responseStatus(responseItem)
@@ -119,5 +134,7 @@ class FollowViewModel : ViewModel() {
 
     companion object {
         private const val TAG = "FollowViewModel"
+        private const val STAT_FOLLOWING = "Statement_Following"
+        private const val STAT_FOLLOWERS = "Statement_Followers"
     }
 }

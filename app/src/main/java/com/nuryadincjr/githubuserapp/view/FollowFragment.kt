@@ -19,12 +19,16 @@ import com.nuryadincjr.githubuserapp.util.Constant.ARG_SECTION_NUMBER
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.SPAN_COUNT
 import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
+import com.nuryadincjr.githubuserapp.viewModel.ViewModelFactory
 
 class FollowFragment : Fragment() {
 
-    private val followViewModel: FollowViewModel by viewModels()
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
+    private var login: String? = ""
+    private val followViewModel: FollowViewModel by viewModels {
+        ViewModelFactory(login)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,15 +42,17 @@ class FollowFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
-        val login = arguments?.getString(ARG_LOGIN)
+        login = arguments?.getString(ARG_LOGIN).toString()
 
         followViewModel.apply {
             if (index == 0) {
-                findFollowers(login.toString())
-            } else findFollowing(login.toString())
-
-            userResponseItem.observe(viewLifecycleOwner) {
-                showRecyclerList(it)
+                followersResponseItem.observe(viewLifecycleOwner) {
+                    showRecyclerList(it)
+                }
+            } else {
+                followingResponseItem.observe(viewLifecycleOwner) {
+                    showRecyclerList(it)
+                }
             }
 
             isLoading.observe(viewLifecycleOwner) {
