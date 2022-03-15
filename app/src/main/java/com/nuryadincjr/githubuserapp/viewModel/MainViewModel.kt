@@ -71,7 +71,7 @@ class MainViewModel : ViewModel() {
 
     fun searchUsers(query: String) {
         _isLoading.value = true
-        service.searchUsers(query, perPage = "100", sort = "created", order = "desc")
+        service.searchUsers(query, sort = "created", order = "desc")
             .enqueue(object : Callback<SearchUsersResponse> {
                 override fun onResponse(
                     call: Call<SearchUsersResponse>,

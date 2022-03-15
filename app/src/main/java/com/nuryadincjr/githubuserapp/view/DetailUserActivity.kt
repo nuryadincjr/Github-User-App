@@ -1,13 +1,16 @@
-package com.nuryadincjr.githubuserapp
+package com.nuryadincjr.githubuserapp.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
@@ -36,6 +39,21 @@ class DetailUserActivity : AppCompatActivity() {
         val user = intent.getParcelableExtra<Users>(DATA_USER)
 
         subscribe(user)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.setting_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        } else if (item.itemId == R.id.setting_menu) {
+            val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
+            startActivity(mIntent)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun subscribe(user: Users?) {
@@ -90,7 +108,6 @@ class DetailUserActivity : AppCompatActivity() {
             tvLocation.text = user?.location
             tvRepository.text = repositories
 
-
             btnShare.setOnClickListener {
                 val gitHubUserUrl = String.format(getString(R.string.github), "${user?.login}")
                 val shareUserIntent = Intent(Intent.ACTION_SEND)
@@ -99,10 +116,5 @@ class DetailUserActivity : AppCompatActivity() {
                 startActivity(shareUserIntent)
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) onBackPressed()
-        return super.onOptionsItemSelected(item)
     }
 }

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nuryadincjr.githubuserapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,8 +13,8 @@
         android:theme="@style/Theme.GitHubUserApp">
         <activity
             android:name=".SplashScreenActivity"
-            android:theme="@style/Theme.GitHubUserApp.NoActionBar.FullScreen"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/Theme.GitHubUserApp.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,10 +22,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailUserActivity"
+            android:name=".view.DetailUserActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
 
         </activity>

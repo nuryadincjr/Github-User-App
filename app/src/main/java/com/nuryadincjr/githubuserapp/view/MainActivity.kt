@@ -1,10 +1,13 @@
-package com.nuryadincjr.githubuserapp
+package com.nuryadincjr.githubuserapp.view
 
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -12,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
@@ -41,14 +45,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-            binding.apply {
-                svUser.setSearchableInfo(searchManager.getSearchableInfo(componentName))
-                svUser.queryHint = resources.getString(R.string.search_hint)
-                svUser.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            binding.svUser.apply {
+                setSearchableInfo(searchManager.getSearchableInfo(componentName))
+                queryHint = resources.getString(R.string.search_hint)
+                setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
                         if (query != null) {
                             searchUsers(query)
-                            svUser.clearFocus()
+                            clearFocus()
                         }
                         return true
                     }
@@ -70,6 +74,19 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.setting_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.setting_menu) {
+            val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
+            startActivity(mIntent)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun showRecyclerList(list: List<Users>) {

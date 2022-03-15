@@ -18,16 +18,19 @@ class ListUsersAdapter(private val listUsersItems: List<Users>) :
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
+        holder.binding.apply {
+            tvUsername.text = listUsersItems[position].login
+            tvName.text = listUsersItems[position].name
 
-        holder.binding.tvUsername.text = listUsersItems[position].login
-        holder.binding.tvName.text = listUsersItems[position].name
+            Glide.with(holder.itemView.context)
+                .load(listUsersItems[position].avatarUrl)
+                .circleCrop()
+                .into(ivAvatar)
+        }
 
-        Glide.with(holder.itemView.context)
-            .load(listUsersItems[position].avatarUrl)
-            .circleCrop()
-            .into(holder.binding.ivAvatar)
-
-        holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(listUsersItems[holder.adapterPosition]) }
+        holder.itemView.setOnClickListener {
+            onItemClickCallback.onItemClicked(listUsersItems[holder.adapterPosition])
+        }
     }
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {

@@ -7,7 +7,7 @@ import com.bumptech.glide.Glide
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
 
-class ListFollowAdapter(private val listUsersItems: List<Users>) :
+class ListFollowAdapter(private val listFollowItems: List<Users>) :
     RecyclerView.Adapter<ListFollowAdapter.ListViewHolder>() {
 
     private lateinit var onItemClickCallback: OnItemClickCallback
@@ -18,23 +18,26 @@ class ListFollowAdapter(private val listUsersItems: List<Users>) :
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
+        holder.binding.apply {
+            tvUsername.text = listFollowItems[position].login
+            tvName.text = listFollowItems[position].name
 
-        holder.binding.tvUsername.text = listUsersItems[position].login
-        holder.binding.tvName.text = listUsersItems[position].name
+            Glide.with(holder.itemView.context)
+                .load(listFollowItems[position].avatarUrl)
+                .circleCrop()
+                .into(ivAvatar)
+        }
 
-        Glide.with(holder.itemView.context)
-            .load(listUsersItems[position].avatarUrl)
-            .circleCrop()
-            .into(holder.binding.ivAvatar)
-
-        holder.itemView.setOnClickListener { onItemClickCallback.onItemClicked(listUsersItems[holder.adapterPosition]) }
+        holder.itemView.setOnClickListener {
+            onItemClickCallback.onItemClicked(listFollowItems[holder.adapterPosition])
+        }
     }
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
     }
 
-    override fun getItemCount(): Int = listUsersItems.size
+    override fun getItemCount(): Int = listFollowItems.size
 
     class ListViewHolder(var binding: ItemRowUserBinding) : RecyclerView.ViewHolder(binding.root)
 

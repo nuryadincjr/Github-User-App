@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.nuryadincjr.githubuserapp.FollowFragment
+import com.nuryadincjr.githubuserapp.view.FollowFragment
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_LOGIN
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_SECTION_NUMBER
 import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES

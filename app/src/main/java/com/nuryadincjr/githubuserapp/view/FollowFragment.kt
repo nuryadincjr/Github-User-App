@@ -1,4 +1,4 @@
-package com.nuryadincjr.githubuserapp
+package com.nuryadincjr.githubuserapp.view
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -43,9 +43,7 @@ class FollowFragment : Fragment() {
         followViewModel.apply {
             if (index == 0) {
                 findFollowers(login.toString())
-            } else {
-                findFollowing(login.toString())
-            }
+            } else findFollowing(login.toString())
 
             userResponseItem.observe(viewLifecycleOwner) {
                 showRecyclerList(it)
@@ -62,6 +60,11 @@ class FollowFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun showRecyclerList(listUsers: List<Users>) {
@@ -88,10 +91,5 @@ class FollowFragment : Fragment() {
         val detailIntent = Intent(context, DetailUserActivity::class.java)
         detailIntent.putExtra(DATA_USER, usersItem)
         startActivity(detailIntent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 }
