@@ -78,7 +78,7 @@ class MainViewModel : ViewModel() {
                     response: Response<SearchUsersResponse>
                 ) {
                     _isLoading.value = false
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful && response.body()?.totalCount!! > 0) {
                         _itemsSearchItem.value = response.body()?.searchItems
                         usersArrayListItem = ArrayList()
 

@@ -17,12 +17,13 @@ object Constant {
         R.string.tab_text_2
     )
 
-    fun <T> responseStatus(response: Response<T>) = when (response.hashCode()) {
-        401 -> Event("$response : Unauthorized")
-        403 -> Event("$response : Forbidden")
-        404 -> Event("$response : Not Found")
-        500 -> Event("$response : Server Error")
-        else -> Event("$response : ${response.message()}")
+    fun <T> responseStatus(response: Response<T>) = when (response.code()) {
+        200 -> Event("Response OK, But No Result")
+        401 -> Event("${response.code()} : Unauthorized")
+        403 -> Event("${response.code()} : Forbidden")
+        404 -> Event("${response.code()} : Not Found")
+        500 -> Event("${response.code()} : Server Error")
+        else -> Event("${response.code()} : ${response.message()}")
     }
 
     fun throwableStatus(t: Throwable) = when (t.hashCode()) {
