@@ -90,14 +90,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showRecyclerList(list: List<Users>) {
-        binding.rvUsers.setHasFixedSize(true)
-        binding.rvUsers.layoutManager =
-            if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                GridLayoutManager(this, 2)
-            } else LinearLayoutManager(this)
-
         val listUsersAdapter = ListUsersAdapter(list)
-        binding.rvUsers.adapter = listUsersAdapter
+
+        binding.rvUsers.apply {
+            setHasFixedSize(true)
+            layoutManager =
+                if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    GridLayoutManager(this@MainActivity, 2)
+                } else LinearLayoutManager(this@MainActivity)
+            adapter = listUsersAdapter
+        }
+
         listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
             override fun onItemClicked(data: Users) {
                 onStartActivity(data)

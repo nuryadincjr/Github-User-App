@@ -68,13 +68,15 @@ class FollowFragment : Fragment() {
     }
 
     private fun showRecyclerList(listUsers: List<Users>) {
-        binding?.rvFollow?.layoutManager =
-            if (context?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                GridLayoutManager(context, SPAN_COUNT)
-            } else LinearLayoutManager(context)
-
         val listUsersAdapter = ListFollowAdapter(listUsers)
-        binding?.rvFollow?.adapter = listUsersAdapter
+
+        binding?.rvFollow?.apply {
+            layoutManager =
+                if (context?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    GridLayoutManager(context, SPAN_COUNT)
+                } else LinearLayoutManager(context)
+            adapter = listUsersAdapter
+        }
 
         listUsersAdapter.setOnItemClickCallback(object : ListFollowAdapter.OnItemClickCallback {
             override fun onItemClicked(data: Users) {
