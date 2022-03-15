@@ -118,6 +118,6 @@ class FollowViewModel : ViewModel() {
     }
 
     companion object {
-        private const val TAG = "MainViewModel"
+        private const val TAG = "FollowViewModel"
     }
 }
