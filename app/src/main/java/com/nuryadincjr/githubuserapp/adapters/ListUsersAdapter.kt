@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.pojo.Users
 
@@ -25,6 +26,8 @@ class ListUsersAdapter(private val listUsersItems: List<Users>) :
             Glide.with(holder.itemView.context)
                 .load(listUsersItems[position].avatarUrl)
                 .circleCrop()
+                .placeholder(R.drawable.ic_baseline_person_24)
+                .error(R.drawable.ic_baseline_error_24)
                 .into(ivAvatar)
         }
 

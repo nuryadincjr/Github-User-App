@@ -84,6 +84,8 @@ class DetailUserActivity : AppCompatActivity() {
         Glide.with(this)
             .load(user?.avatarUrl)
             .circleCrop()
+            .placeholder(R.drawable.ic_baseline_person_24)
+            .error(R.drawable.ic_baseline_error_24)
             .into(binding.ivAvatar)
 
         val followInfo = String.format(

@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/nurya/AndroidStudioProjects/GitHubUserApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.194" />
+        <entry key="..\:/Users/nurya/AndroidStudioProjects/GitHubUserApp/app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.2075" />
+        <entry key="..\:/Users/nurya/AndroidStudioProjects/GitHubUserApp/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.2075" />
         <entry key="..\:/Users/nurya/AndroidStudioProjects/GitHubUserApp/app/src/main/res/drawable/ic_baseline_settings.xml" value="0.2075" />
         <entry key="..\:/Users/nurya/AndroidStudioProjects/GitHubUserApp/app/src/main/res/drawable/ic_outline_company.xml" value="0.2075" />
         <entry key="..\:/Users/nurya/AndroidStudioProjects/GitHubUserApp/app/src/main/res/drawable/ic_outline_followers.xml" value="0.2075" />

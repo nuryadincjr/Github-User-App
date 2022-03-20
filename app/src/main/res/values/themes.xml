@@ -24,6 +24,13 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="Theme.GitHubUserApp.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/teal_primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/octocat</item>
+        <item name="windowSplashScreenAnimationDuration">200</item>
+        <item name="postSplashScreenTheme">@style/Theme.GitHubUserApp</item>
+    </style>
+
     <style name="TextContent">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

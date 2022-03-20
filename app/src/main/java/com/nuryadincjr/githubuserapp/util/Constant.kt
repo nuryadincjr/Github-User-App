@@ -7,9 +7,7 @@ object Constant {
     const val ARG_SECTION_NUMBER = "section_number"
     const val ARG_LOGIN = "login"
     const val BASE_URL = "https://api.github.com/"
-    const val DELAY_MILLS = 3000L
     const val DATA_USER = "data_user"
-    const val TOKEN = "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"
     const val SPAN_COUNT = 2
 
     val TAB_TITLES = intArrayOf(
