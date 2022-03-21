@@ -37,10 +37,6 @@ class UsersRepository private constructor(
     private val _statusCode = MutableLiveData<Event<String>>()
     val statusCode: LiveData<Event<String>> = _statusCode
 
-    fun getUsersFavorite(): LiveData<List<UsersEntity>> {
-        return usersDao.getUsersFavorite()
-    }
-
     fun findUsers() {
         _isLoading.value = true
         service.getUsers().enqueue(object : Callback<List<UsersResponse>> {
@@ -126,9 +122,12 @@ class UsersRepository private constructor(
         })
     }
 
-    suspend fun setUserFavorite(usersEntity: UsersEntity, favoriteState: Boolean) {
-        usersEntity.isFavourite = favoriteState
-        usersDao.updateUser(usersEntity)
+    suspend fun setUserFavorite(usersEntity: UsersEntity) {
+        usersDao.insertToFavorite(usersEntity)
+    }
+
+    fun deleteUserFavorite(login: String) {
+        usersDao.deleteFromFavorite(login)
     }
 
     companion object {

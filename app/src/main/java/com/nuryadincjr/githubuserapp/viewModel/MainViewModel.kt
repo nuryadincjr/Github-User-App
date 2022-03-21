@@ -29,17 +29,15 @@ class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() 
         return usersRepository.statusCode
     }
 
-    fun getUsersFavorite() = usersRepository.getUsersFavorite()
-
     fun saveFavorite(usersEntity: UsersEntity) {
         viewModelScope.launch {
-            usersRepository.setUserFavorite(usersEntity, true)
+            usersRepository.setUserFavorite(usersEntity)
         }
     }
 
-    fun deleteFavorite(usersEntity: UsersEntity) {
+    fun deleteFavorite(login: String) {
         viewModelScope.launch {
-            usersRepository.setUserFavorite(usersEntity, false)
+            usersRepository.deleteUserFavorite(login)
         }
     }
 }

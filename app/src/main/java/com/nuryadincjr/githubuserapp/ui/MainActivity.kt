@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,6 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
+import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
@@ -131,7 +131,20 @@ class MainActivity : AppCompatActivity() {
         listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
             override fun onItemClicked(view: View, position: Int) {
                 if (view.id == R.id.iv_favorite) {
-                    startActivity(Intent(this@MainActivity, FavoriteActivity::class.java))
+                    listUsers[position].apply {
+                        val usersEntity = UsersEntity(
+                            login.toString(),
+                            name.toString(),
+                            avatarUrl,
+                            followers.toString(),
+                            following.toString(),
+                            company,
+                            location,
+                            publicRepos.toString(),
+                            true
+                        )
+                        mainViewModel.saveFavorite(usersEntity)
+                    }
                 } else {
                     onStartActivity(listUsers[position])
                 }

@@ -131,9 +131,12 @@ class FollowRepository private constructor(
         return usersDao.getUsersFavorite()
     }
 
-    suspend fun setUserFavorite(usersEntity: UsersEntity, favoriteState: Boolean) {
-        usersEntity.isFavourite = favoriteState
-        usersDao.updateUser(usersEntity)
+    suspend fun setUserFavorite(usersEntity: UsersEntity) {
+        usersDao.insertToFavorite(usersEntity)
+    }
+
+    fun deleteUserFavorite(login: String) {
+        usersDao.deleteFromFavorite(login)
     }
 
     companion object {

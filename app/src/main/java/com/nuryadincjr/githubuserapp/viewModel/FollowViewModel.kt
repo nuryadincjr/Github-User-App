@@ -38,13 +38,13 @@ class FollowViewModel(private val followRepository: FollowRepository, login: Str
 
     fun saveFavorite(usersEntity: UsersEntity) {
         viewModelScope.launch {
-            followRepository.setUserFavorite(usersEntity, true)
+            followRepository.setUserFavorite(usersEntity)
         }
     }
 
-    fun deleteFavorite(usersEntity: UsersEntity) {
+    fun deleteFavorite(login: String) {
         viewModelScope.launch {
-            followRepository.setUserFavorite(usersEntity, false)
+            followRepository.deleteUserFavorite(login)
         }
     }
 }
