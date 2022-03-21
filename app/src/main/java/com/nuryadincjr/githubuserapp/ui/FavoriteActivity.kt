@@ -2,7 +2,6 @@ package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -41,8 +40,7 @@ class FavoriteActivity : AppCompatActivity() {
         if (item.itemId == android.R.id.home) {
             onBackPressed()
         } else if (item.itemId == R.id.setting_menu) {
-            val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
-            startActivity(mIntent)
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

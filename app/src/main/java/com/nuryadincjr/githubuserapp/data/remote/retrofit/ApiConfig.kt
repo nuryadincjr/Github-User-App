@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.String.format
 
 class ApiConfig {
     companion object {
@@ -19,21 +20,16 @@ class ApiConfig {
                 logger.setLevel(HttpLoggingInterceptor.Level.NONE)
             }
 
-//            val client = OkHttpClient.Builder()
-//                .addInterceptor {
-//                    val request = it.request()
-//                    val requestBuilder = request.newBuilder()
-//                        .addHeader("Authorization", API_KEY)
-//                    val newRequest = requestBuilder.build()
-//                    it.proceed(newRequest)
-//                }
-//                .addNetworkInterceptor(loggingInterceptor)
-//                .build()
-
             val client = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
+                .addInterceptor {
+                    val request = it.request()
+                    val requestBuilder = request.newBuilder()
+                        .addHeader("Authorization", format("token %s", API_KEY))
+                        .build()
+                    it.proceed(requestBuilder)
+                }
+                .addNetworkInterceptor(loggingInterceptor)
                 .build()
-
 
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)

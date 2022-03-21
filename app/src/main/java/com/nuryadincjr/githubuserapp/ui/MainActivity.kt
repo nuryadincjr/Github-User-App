@@ -12,8 +12,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.R
@@ -21,8 +26,13 @@ import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
+import com.nuryadincjr.githubuserapp.util.SettingPreferences
+import com.nuryadincjr.githubuserapp.util.SettingsViewModelFactory
 import com.nuryadincjr.githubuserapp.util.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
+import com.nuryadincjr.githubuserapp.viewModel.SettingsViewModel
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +47,20 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         supportActionBar?.title = resources.getString(R.string.github_user)
+
+        val pref = SettingPreferences.getInstance(dataStore)
+        val viewModel = ViewModelProvider(
+            this@MainActivity,
+            SettingsViewModelFactory(pref)
+        )[SettingsViewModel::class.java]
+
+        viewModel.getThemeSettings().observe(this) {
+            if (it) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -85,8 +109,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.setting_menu) {
-            val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
-            startActivity(mIntent)
+            startActivity(Intent(this, SettingsActivity::class.java))
+        } else if (item.itemId == R.id.favorite_menu) {
+            startActivity(Intent(this@MainActivity, FavoriteActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

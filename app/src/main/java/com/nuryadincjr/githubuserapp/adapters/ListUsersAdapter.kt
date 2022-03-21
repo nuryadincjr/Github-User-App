@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nuryadincjr.githubuserapp.R
-import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
-import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
+import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 
 class ListUsersAdapter(private val listUsersItems: List<Users>) :
     RecyclerView.Adapter<ListUsersAdapter.ListViewHolder>() {

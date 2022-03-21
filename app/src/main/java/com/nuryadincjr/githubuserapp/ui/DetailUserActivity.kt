@@ -2,7 +2,6 @@ package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,8 +11,8 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
-import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
+import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
 import com.nuryadincjr.githubuserapp.viewModel.UserViewModel
@@ -58,15 +57,14 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
         if (item.itemId == android.R.id.home) {
             onBackPressed()
         } else if (item.itemId == R.id.setting_menu) {
-            val mIntent = Intent(Settings.ACTION_LOCALE_SETTINGS)
-            startActivity(mIntent)
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun subscribe(user: Users) {
         userViewModel.apply {
-            user?.let { setUser(it) }
+            setUser(user)
             getUser().observe(this@DetailUserActivity) {
                 if (it != null) {
                     sectionsPager(it)
@@ -85,8 +83,8 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = resources.getString(TAB_TITLES[position])
                 if (position == 0) {
-                    tab.orCreateBadge.number = user.followers?.toInt() ?: 0
-                } else tab.orCreateBadge.number = user.following?.toInt() ?: 0
+                    tab.orCreateBadge.number = user.followers ?: 0
+                } else tab.orCreateBadge.number = user.following ?: 0
             }.attach()
         }
     }

@@ -13,10 +13,10 @@ interface UsersDao {
     fun getUsersFavorite(): LiveData<List<UsersEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertUser(news: List<UsersEntity>)
+    suspend fun insertUser(userList: List<UsersEntity>)
 
     @Update
-    suspend fun updateUser(news: UsersEntity)
+    suspend fun updateUser(user: UsersEntity)
 
     @Query("DELETE FROM favorite WHERE favourite = 0")
     fun deleteAll()

@@ -31,18 +31,18 @@ interface ApiService {
         @Query("order") order: String? = null,
     ): SearchUsersResponse
 
-    @Headers("Authorization: token $TOKEN")
+//    @Headers("Authorization: token $TOKEN")
     @GET("users")
     fun getUsers(
     ): Call<List<UsersResponse>>
 
-    @Headers("Authorization: token $TOKEN")
+//    @Headers("Authorization: token $TOKEN")
     @GET("users/{login}")
     fun getUser(
         @Path("login") login: String
     ): Call<Users>
 
-    @Headers("Authorization: token $TOKEN")
+//    @Headers("Authorization: token $TOKEN")
     @GET("search/users")
     fun searchUsers(
         @Query("q") query: String? = null,
@@ -52,13 +52,13 @@ interface ApiService {
         @Query("order") order: String? = null,
     ): Call<SearchUsersResponse>
 
-    @Headers("Authorization: token $TOKEN")
+//    @Headers("Authorization: token $TOKEN")
     @GET("users/{login}/followers")
     fun getFollowers(
         @Path("login") login: String
     ): Call<List<UsersResponse>>
 
-    @Headers("Authorization: token $TOKEN")
+//    @Headers("Authorization: token $TOKEN")
     @GET("users/{login}/following")
     fun getFollowing(
         @Path("login") login: String
