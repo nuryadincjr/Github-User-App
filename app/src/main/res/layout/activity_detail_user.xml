@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    tools:context=".view.DetailUserActivity">
+    tools:context=".ui.DetailUserActivity">
 
     <ImageView
         android:id="@+id/iv_avatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:contentDescription="@string/avatar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,7 +24,7 @@
     <TextView
         android:id="@+id/tv_username"
         style="@style/TextContent.Title"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_avatar"
@@ -44,7 +44,7 @@
         style="@style/ButtonGeneral"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:drawableEnd="@drawable/ic_outline_share"
         android:text="@string/share_profile"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
     <TextView
         android:id="@+id/tv_followers"
         style="@style/TextContent.Content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/follow_info"
         app:drawableStartCompat="@drawable/ic_outline_followers"
         app:drawableTint="@color/teal_dark_primary"
@@ -123,5 +123,15 @@
         app:layout_constraintTop_toBottomOf="@+id/tabLayout">
 
     </androidx.viewpager2.widget.ViewPager2>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/favorite"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_favorite" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

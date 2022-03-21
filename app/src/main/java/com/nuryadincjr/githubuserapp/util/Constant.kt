@@ -9,6 +9,7 @@ object Constant {
     const val BASE_URL = "https://api.github.com/"
     const val DATA_USER = "data_user"
     const val SPAN_COUNT = 2
+    const val TOKEN = "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"
 
     val TAB_TITLES = intArrayOf(
         R.string.tab_text_1,

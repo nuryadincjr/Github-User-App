@@ -1,140 +1,50 @@
 package com.nuryadincjr.githubuserapp.viewModel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nuryadincjr.githubuserapp.config.ApiConfig
-import com.nuryadincjr.githubuserapp.pojo.Users
-import com.nuryadincjr.githubuserapp.pojo.UsersResponse
-import com.nuryadincjr.githubuserapp.util.Constant.responseStatus
-import com.nuryadincjr.githubuserapp.util.Constant.throwableStatus
+import androidx.lifecycle.viewModelScope
+import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
+import com.nuryadincjr.githubuserapp.data.repository.FollowRepository
+import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.util.Event
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 
-class FollowViewModel(login: String) : ViewModel() {
-
-    private val service = ApiConfig.getApiService()
-
-    private var followersArrayListItem: ArrayList<Users>? = null
-    private var followingArrayListItem: ArrayList<Users>? = null
-
-    private val _followingResponse = MutableLiveData<List<UsersResponse>>()
-    val followingResponse: LiveData<List<UsersResponse>> = _followingResponse
-
-    private val _followersResponse = MutableLiveData<List<UsersResponse>>()
-    val followersResponse: LiveData<List<UsersResponse>> = _followersResponse
-
-    private val _followersResponseItem = MutableLiveData<List<Users>>()
-    val followersResponseItem: LiveData<List<Users>> = _followersResponseItem
-
-    private val _followingResponseItem = MutableLiveData<List<Users>>()
-    val followingResponseItem: LiveData<List<Users>> = _followingResponseItem
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _statusCode = MutableLiveData<Event<String>>()
-    val statusCode: LiveData<Event<String>> = _statusCode
+class FollowViewModel(private val followRepository: FollowRepository, login: String) : ViewModel() {
 
     init {
-        findFollowers(login)
-        findFollowing(login)
+        followRepository.apply {
+            findFollowers(login)
+            findFollowing(login)
+        }
     }
 
-    private fun findFollowers(login: String) {
-        _isLoading.value = true
-        service.getFollowers(login).enqueue(object : Callback<List<UsersResponse>> {
-            override fun onResponse(
-                call: Call<List<UsersResponse>>,
-                response: Response<List<UsersResponse>>
-            ) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    _followersResponse.value = response.body()
-                    followersArrayListItem = ArrayList()
-
-                    for (i in 0 until followersResponse.value?.size!!) {
-                        findUser(followersResponse.value?.get(i)?.login.toString(), STAT_FOLLOWERS)
-                    }
-                } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                    _statusCode.value = responseStatus(response)
-                }
-            }
-
-            override fun onFailure(call: Call<List<UsersResponse>>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
-                _statusCode.value = throwableStatus(t)
-            }
-        })
+    fun getFollowers(): LiveData<List<Users>> {
+        return followRepository.followersResponseItem
     }
 
-    private fun findFollowing(login: String) {
-        _isLoading.value = true
-        service.getFollowing(login).enqueue(object : Callback<List<UsersResponse>> {
-            override fun onResponse(
-                call: Call<List<UsersResponse>>,
-                response: Response<List<UsersResponse>>
-            ) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    _followingResponse.value = response.body()
-                    followingArrayListItem = ArrayList()
-
-                    for (i in 0 until followingResponse.value?.size!!) {
-                        findUser(followingResponse.value?.get(i)?.login.toString(), STAT_FOLLOWING)
-                    }
-                } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                    _statusCode.value = responseStatus(response)
-                }
-            }
-
-            override fun onFailure(call: Call<List<UsersResponse>>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
-                _statusCode.value = throwableStatus(t)
-            }
-        })
+    fun getFollowing(): LiveData<List<Users>> {
+        return followRepository.followingResponseItem
     }
 
-    private fun findUser(login: String, statement: String) {
-        _isLoading.value = true
-        service.getUser(login).enqueue(object : Callback<Users> {
-            override fun onResponse(
-                call: Call<Users>,
-                responseItem: Response<Users>
-            ) {
-                _isLoading.value = false
-                if (responseItem.isSuccessful) {
-                    if (statement == STAT_FOLLOWERS) {
-                        responseItem.body()?.let { followersArrayListItem?.add(it) }
-                        _followersResponseItem.value = followersArrayListItem!!
-                    } else {
-                        responseItem.body()?.let { followingArrayListItem?.add(it) }
-                        _followingResponseItem.value = followingArrayListItem!!
-                    }
-                } else {
-                    Log.e(TAG, "onFailure: ${responseItem.message()}")
-                    _statusCode.value = responseStatus(responseItem)
-                }
-            }
-
-            override fun onFailure(call: Call<Users>, t: Throwable) {
-                _isLoading.value = false
-                Log.e(TAG, "onFailure: ${t.message}")
-                _statusCode.value = throwableStatus(t)
-            }
-        })
+    fun isLoading(): LiveData<Boolean> {
+        return followRepository.isLoading
     }
 
-    companion object {
-        private const val TAG = "FollowViewModel"
-        private const val STAT_FOLLOWING = "Statement_Following"
-        private const val STAT_FOLLOWERS = "Statement_Followers"
+    fun statusCode(): LiveData<Event<String>> {
+        return followRepository.statusCode
+    }
+
+    fun getUsersFavorite() = followRepository.getUsersFavorite()
+
+    fun saveFavorite(usersEntity: UsersEntity) {
+        viewModelScope.launch {
+            followRepository.setUserFavorite(usersEntity, true)
+        }
+    }
+
+    fun deleteFavorite(usersEntity: UsersEntity) {
+        viewModelScope.launch {
+            followRepository.setUserFavorite(usersEntity, false)
+        }
     }
 }

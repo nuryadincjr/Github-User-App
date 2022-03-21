@@ -1,4 +1,4 @@
-package com.nuryadincjr.githubuserapp.pojo
+package com.nuryadincjr.githubuserapp.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 

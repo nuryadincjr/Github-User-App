@@ -1,8 +1,7 @@
-package com.nuryadincjr.githubuserapp.config
+package com.nuryadincjr.githubuserapp.data.remote.retrofit
 
 import androidx.viewbinding.BuildConfig
 import com.nuryadincjr.githubuserapp.BuildConfig.*
-import com.nuryadincjr.githubuserapp.interfaces.ApiService
 import com.nuryadincjr.githubuserapp.util.Constant.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,15 +19,19 @@ class ApiConfig {
                 logger.setLevel(HttpLoggingInterceptor.Level.NONE)
             }
 
+//            val client = OkHttpClient.Builder()
+//                .addInterceptor {
+//                    val request = it.request()
+//                    val requestBuilder = request.newBuilder()
+//                        .addHeader("Authorization", API_KEY)
+//                    val newRequest = requestBuilder.build()
+//                    it.proceed(newRequest)
+//                }
+//                .addNetworkInterceptor(loggingInterceptor)
+//                .build()
+
             val client = OkHttpClient.Builder()
-                .addInterceptor {
-                    val request = it.request()
-                    val requestBuilder = request.newBuilder()
-                        .addHeader("Authorization", KEY_TOKEN)
-                    val newRequest = requestBuilder.build()
-                    it.proceed(newRequest)
-                }
-                .addNetworkInterceptor(loggingInterceptor)
+                .addInterceptor(loggingInterceptor)
                 .build()
 
 

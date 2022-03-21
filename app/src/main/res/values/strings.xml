@@ -10,6 +10,7 @@
     <string name="location">Location</string>
     <string name="share_profile">Share Profile</string>
     <string name="detail_user">Detail User</string>
+    <string name="favorite_user">Favorite User</string>
     <string name="follow_info">%s followers · %s following</string>
     <string name="repositories">%s Repositories</string>
     <string name="github">https://github.com/%s</string>
@@ -20,5 +21,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_hint">Find username</string>
     <string name="setting">Setting</string>
+    <string name="favorite">Favorite</string>
 
 </resources>

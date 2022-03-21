@@ -1,4 +1,4 @@
-package com.nuryadincjr.githubuserapp.view
+package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -11,15 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.ListFollowAdapter
 import com.nuryadincjr.githubuserapp.databinding.FragmentFollowBinding
-import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_LOGIN
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_SECTION_NUMBER
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.SPAN_COUNT
 import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
-import com.nuryadincjr.githubuserapp.viewModel.ViewModelFactory
+import com.nuryadincjr.githubuserapp.util.FollowViewModelFactory
 
 class FollowFragment : Fragment() {
 
@@ -27,7 +28,7 @@ class FollowFragment : Fragment() {
     private val binding get() = _binding
     private var login: String? = ""
     private val followViewModel: FollowViewModel by viewModels {
-        ViewModelFactory(login)
+        FollowViewModelFactory.getInstance(requireContext(), login)
     }
 
     override fun onCreateView(
@@ -46,20 +47,20 @@ class FollowFragment : Fragment() {
 
         followViewModel.apply {
             if (index == 0) {
-                followersResponseItem.observe(viewLifecycleOwner) {
+                getFollowers().observe(viewLifecycleOwner) {
                     showRecyclerList(it)
                 }
             } else {
-                followingResponseItem.observe(viewLifecycleOwner) {
+                getFollowing().observe(viewLifecycleOwner) {
                     showRecyclerList(it)
                 }
             }
 
-            isLoading.observe(viewLifecycleOwner) {
+            isLoading().observe(viewLifecycleOwner) {
                 showLoading(it)
             }
 
-            statusCode.observe(viewLifecycleOwner) {
+            statusCode().observe(viewLifecycleOwner) {
                 it.getContentIfNotHandled()?.let { respond ->
                     Toast.makeText(context, respond, Toast.LENGTH_LONG)
                         .show()
@@ -85,8 +86,12 @@ class FollowFragment : Fragment() {
         }
 
         listUsersAdapter.setOnItemClickCallback(object : ListFollowAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: Users) {
-                onStartActivity(data)
+            override fun onItemClicked(view: View, position: Int) {
+                if (view.id == R.id.iv_favorite) {
+                    startActivity(Intent(requireContext(), FavoriteActivity::class.java))
+                } else {
+                    onStartActivity(listUsers[position])
+                }
             }
         })
     }

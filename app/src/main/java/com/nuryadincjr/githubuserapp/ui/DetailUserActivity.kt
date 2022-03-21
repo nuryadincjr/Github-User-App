@@ -1,10 +1,11 @@
-package com.nuryadincjr.githubuserapp.view
+package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -12,12 +13,12 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
-import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
 import com.nuryadincjr.githubuserapp.viewModel.UserViewModel
 
-class DetailUserActivity : AppCompatActivity() {
+class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityDetailUserBinding
     private val userViewModel: UserViewModel by viewModels()
@@ -37,12 +38,20 @@ class DetailUserActivity : AppCompatActivity() {
 
         val user = intent.getParcelableExtra<Users>(DATA_USER)
 
-        subscribe(user)
+        binding.floatingActionButton.setOnClickListener(this)
+        if (user != null) {
+            subscribe(user)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.setting_menu, menu)
         return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.favorite_menu)?.isVisible = false
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -55,27 +64,29 @@ class DetailUserActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun subscribe(user: Users?) {
+    private fun subscribe(user: Users) {
         userViewModel.apply {
             user?.let { setUser(it) }
             getUser().observe(this@DetailUserActivity) {
-                sectionsPager(it)
+                if (it != null) {
+                    sectionsPager(it)
+                }
                 setUserData(it)
             }
         }
     }
 
-    private fun sectionsPager(user: Users?) {
+    private fun sectionsPager(user: Users) {
         val sectionsPagerAdapter = SectionsPagerAdapter(this)
-        sectionsPagerAdapter.login = user?.login.toString()
+        sectionsPagerAdapter.login = user.login.toString()
 
         binding.apply {
             viewPager.adapter = sectionsPagerAdapter
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = resources.getString(TAB_TITLES[position])
                 if (position == 0) {
-                    tab.orCreateBadge.number = user?.followers!!
-                } else tab.orCreateBadge.number = user?.following!!
+                    tab.orCreateBadge.number = user.followers?.toInt() ?: 0
+                } else tab.orCreateBadge.number = user.following?.toInt() ?: 0
             }.attach()
         }
     }
@@ -115,5 +126,16 @@ class DetailUserActivity : AppCompatActivity() {
                 startActivity(shareUserIntent)
             }
         }
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0?.id == R.id.floatingActionButton) {
+            onStartActivity()
+        }
+    }
+
+    private fun onStartActivity() {
+        val detailIntent = Intent(this, FavoriteActivity::class.java)
+        startActivity(detailIntent)
     }
 }

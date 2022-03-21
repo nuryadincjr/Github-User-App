@@ -1,4 +1,4 @@
-package com.nuryadincjr.githubuserapp.view
+package com.nuryadincjr.githubuserapp.ui
 
 import android.app.SearchManager
 import android.content.Context
@@ -19,14 +19,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
-import com.nuryadincjr.githubuserapp.pojo.Users
+import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
+import com.nuryadincjr.githubuserapp.util.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels {
+        ViewModelFactory.getInstance(this@MainActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -39,11 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mainViewModel.apply {
-            userResponseItem.observe(this@MainActivity) {
-                showRecyclerList(it)
-            }
-
-            searchResponseItem.observe(this@MainActivity) {
+            getUsers().observe(this@MainActivity) {
                 showRecyclerList(it)
             }
 
@@ -66,11 +65,11 @@ class MainActivity : AppCompatActivity() {
                 })
             }
 
-            isLoading.observe(this@MainActivity) {
+            isLoading().observe(this@MainActivity) {
                 showLoading(it)
             }
 
-            statusCode.observe(this@MainActivity) {
+            statusCode().observe(this@MainActivity) {
                 it.getContentIfNotHandled()?.let { respond ->
                     Toast.makeText(this@MainActivity, respond, Toast.LENGTH_LONG)
                         .show()
@@ -92,8 +91,8 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showRecyclerList(list: List<Users>) {
-        val listUsersAdapter = ListUsersAdapter(list)
+    private fun showRecyclerList(listUsers: List<Users>) {
+        val listUsersAdapter = ListUsersAdapter(listUsers)
 
         binding.rvUsers.apply {
             setHasFixedSize(true)
@@ -105,8 +104,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: Users) {
-                onStartActivity(data)
+            override fun onItemClicked(view: View, position: Int) {
+                if (view.id == R.id.iv_favorite) {
+                    startActivity(Intent(this@MainActivity, FavoriteActivity::class.java))
+                } else {
+                    onStartActivity(listUsers[position])
+                }
             }
         })
     }
