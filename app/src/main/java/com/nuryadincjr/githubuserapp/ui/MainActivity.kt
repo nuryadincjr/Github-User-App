@@ -17,6 +17,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
+import com.nuryadincjr.githubuserapp.data.Result
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.SettingPreferences
 import com.nuryadincjr.githubuserapp.util.SettingsViewModelFactory
@@ -65,9 +67,29 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val newsAdapter = ListUsersAdapter { news: Users ->
+            Toast.makeText(this, news.name, Toast.LENGTH_LONG).show()
+//            if (news.isFavourite) {
+//                mainViewModel.deleteFavorite(news)
+//            } else {
+//                mainViewModel.saveFavorite(news)
+//            }
+        }
+
+
+
+        binding.rvUsers.apply {
+            layoutManager =
+                if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    GridLayoutManager(this@MainActivity, 2)
+                } else LinearLayoutManager(this@MainActivity)
+            setHasFixedSize(true)
+            adapter = newsAdapter
+        }
+
         mainViewModel.apply {
             getUsers().observe(this@MainActivity) {
-                showRecyclerList(it)
+                newsAdapter.submitList(it)
             }
 
             val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -116,41 +138,41 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showRecyclerList(listUsers: List<Users>) {
-        val listUsersAdapter = ListUsersAdapter(listUsers)
-
-        binding.rvUsers.apply {
-            setHasFixedSize(true)
-            layoutManager =
-                if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    GridLayoutManager(this@MainActivity, 2)
-                } else LinearLayoutManager(this@MainActivity)
-            adapter = listUsersAdapter
-        }
-
-        listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
-            override fun onItemClicked(view: View, position: Int) {
-                if (view.id == R.id.iv_favorite) {
-                    listUsers[position].apply {
-                        val usersEntity = UsersEntity(
-                            login.toString(),
-                            name.toString(),
-                            avatarUrl,
-                            followers.toString(),
-                            following.toString(),
-                            company,
-                            location,
-                            publicRepos.toString(),
-                            true
-                        )
-                        mainViewModel.saveFavorite(usersEntity)
-                    }
-                } else {
-                    onStartActivity(listUsers[position])
-                }
-            }
-        })
-    }
+//    private fun showRecyclerList(listUsers: List<Users>) {
+//        val listUsersAdapter = ListUsersAdapter(listUsers)
+//
+//        binding.rvUsers.apply {
+//            setHasFixedSize(true)
+//            layoutManager =
+//                if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//                    GridLayoutManager(this@MainActivity, 2)
+//                } else LinearLayoutManager(this@MainActivity)
+//            adapter = listUsersAdapter
+//        }
+//
+//        listUsersAdapter.setOnItemClickCallback(object : ListUsersAdapter.OnItemClickCallback {
+//            override fun onItemClicked(view: View, position: Int) {
+//                if (view.id == R.id.iv_favorite) {
+//                    listUsers[position].apply {
+//                        val usersEntity = UsersEntity(
+//                            login.toString(),
+//                            name.toString(),
+//                            avatarUrl,
+//                            followers.toString(),
+//                            following.toString(),
+//                            company,
+//                            location,
+//                            publicRepos.toString(),
+//                            true
+//                        )
+//                        mainViewModel.saveFavorite(usersEntity)
+//                    }
+//                } else {
+//                    onStartActivity(listUsers[position])
+//                }
+//            }
+//        })
+//    }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE

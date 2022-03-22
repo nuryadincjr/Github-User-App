@@ -1,6 +1,7 @@
 package com.nuryadincjr.githubuserapp.viewModel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
@@ -31,13 +32,31 @@ class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() 
 
     fun saveFavorite(usersEntity: UsersEntity) {
         viewModelScope.launch {
-            usersRepository.setUserFavorite(usersEntity)
+            usersRepository.setUserFavorite(usersEntity, true)
         }
     }
 
-    fun deleteFavorite(login: String) {
+    fun deleteFavorite(usersEntity: UsersEntity) {
         viewModelScope.launch {
-            usersRepository.deleteUserFavorite(login)
+            usersRepository.setUserFavorite(usersEntity, false)
         }
+    }
+
+    private val _user = MutableLiveData<Users>()
+
+    fun setUser(user: Users) {
+        _user.value = user
+    }
+
+    fun getUser(): LiveData<Users?> {
+        return _user
+    }
+
+    fun insertFavoriteUser(user: UsersEntity) = viewModelScope.launch {
+        usersRepository.insertFavoriteUser(user)
+    }
+
+    fun deleteFavoriteUser(user: UsersEntity) = viewModelScope.launch {
+        usersRepository.deleteFavoriteUser(user)
     }
 }

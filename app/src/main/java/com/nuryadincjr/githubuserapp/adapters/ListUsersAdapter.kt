@@ -1,38 +1,40 @@
 package com.nuryadincjr.githubuserapp.adapters
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nuryadincjr.githubuserapp.R
+import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
+import com.nuryadincjr.githubuserapp.ui.DetailUserActivity
+import com.nuryadincjr.githubuserapp.util.Constant
 
-class ListUsersAdapter(private val listUsersItems: List<Users>) :
-    RecyclerView.Adapter<ListUsersAdapter.ListViewHolder>() {
-
-    private lateinit var onItemClickCallback: OnItemClickCallback
+class ListUsersAdapter(private val onBookmarkClick: (Users) -> Unit) :
+    ListAdapter<Users, ListUsersAdapter.ListViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val binding = ItemRowUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemRowUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ListViewHolder(binding, this)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        holder.setDataToView(listUsersItems[position])
+        val news = getItem(position)
+        holder.setDataToView(news)
     }
 
-    override fun getItemCount(): Int = listUsersItems.size
-
-    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
-        this.onItemClickCallback = onItemClickCallback
-    }
 
     class ListViewHolder(
         private var binding: ItemRowUserBinding,
         private var listUsersAdapter: ListUsersAdapter
-    ) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun setDataToView(user: Users) {
             binding.apply {
@@ -47,16 +49,69 @@ class ListUsersAdapter(private val listUsersItems: List<Users>) :
                     .into(ivAvatar)
             }
 
-            binding.ivFavorite.setOnClickListener(this)
-            itemView.setOnClickListener(this)
-        }
+//            val ivBookmark = binding.ivFavorite
+//            if (user.isFavourite) {
+//                ivBookmark.setImageDrawable(
+//                    ContextCompat.getDrawable(
+//                        ivBookmark.context,
+//                        R.drawable.ic_baseline_favorited
+//                    )
+//                )
+//            } else {
+//                ivBookmark.setImageDrawable(
+//                    ContextCompat.getDrawable(
+//                        ivBookmark.context,
+//                        R.drawable.ic_baseline_favorite
+//                    )
+//                )
+//            }
+//
+//            ivBookmark.setOnClickListener {
+//                listUsersAdapter.onBookmarkClick(user)
+//                if (user.isFavourite) {
+//                    ivBookmark.setImageDrawable(
+//                        ContextCompat.getDrawable(
+//                            ivBookmark.context,
+//                            R.drawable.ic_baseline_favorited
+//                        )
+//                    )
+//                } else {
+//                    ivBookmark.setImageDrawable(
+//                        ContextCompat.getDrawable(
+//                            ivBookmark.context,
+//                            R.drawable.ic_baseline_favorite
+//                        )
+//                    )
+//                }
+//            }
 
-        override fun onClick(p0: View) {
-            listUsersAdapter.onItemClickCallback.onItemClicked(p0, adapterPosition)
+            itemView.apply {
+                setOnClickListener {
+                    context.startActivity(
+                        Intent(
+                            context,
+                            DetailUserActivity::class.java
+                        ).putExtra(Constant.DATA_USER, user)
+                    )
+                }
+            }
         }
     }
 
-    interface OnItemClickCallback {
-        fun onItemClicked(view: View, position: Int)
+    companion object {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<Users> =
+            object : DiffUtil.ItemCallback<Users>() {
+                override fun areItemsTheSame(oldUser: Users, newUser: Users): Boolean {
+                    return oldUser.login == newUser.login
+                }
+
+                @SuppressLint("DiffUtilEquals")
+                override fun areContentsTheSame(
+                    oldUser: Users,
+                    newUser: Users
+                ): Boolean {
+                    return oldUser == newUser
+                }
+            }
     }
 }

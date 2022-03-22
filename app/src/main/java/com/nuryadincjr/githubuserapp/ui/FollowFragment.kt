@@ -27,9 +27,7 @@ class FollowFragment : Fragment() {
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
     private var login: String? = ""
-    private val followViewModel: FollowViewModel by viewModels {
-        FollowViewModelFactory.getInstance(requireContext(), login)
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +42,10 @@ class FollowFragment : Fragment() {
 
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
         login = arguments?.getString(ARG_LOGIN).toString()
+
+        val followViewModel: FollowViewModel by viewModels {
+            FollowViewModelFactory.getInstance(requireContext(), login)
+        }
 
         followViewModel.apply {
             if (index == 0) {

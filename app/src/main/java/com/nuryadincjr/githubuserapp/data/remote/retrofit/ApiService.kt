@@ -19,6 +19,11 @@ interface ApiService {
         @Path("login") login: String
     ): Call<Users>
 
+    @GET("users/{login}")
+    suspend fun getUser2(
+        @Path("login") login: String
+    ): Users
+
     @GET("search/users")
     fun searchUsers(
         @Query("q") query: String? = null,

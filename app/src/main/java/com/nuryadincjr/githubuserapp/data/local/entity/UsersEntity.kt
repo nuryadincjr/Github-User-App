@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "favorite")
+@Entity(tableName = "user")
 class UsersEntity(
     @field:ColumnInfo(name = "login")
     @field:PrimaryKey

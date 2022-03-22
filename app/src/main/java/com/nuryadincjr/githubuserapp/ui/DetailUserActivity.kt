@@ -1,6 +1,7 @@
 package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,16 +12,20 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
+import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
-import com.nuryadincjr.githubuserapp.viewModel.UserViewModel
+import com.nuryadincjr.githubuserapp.util.ViewModelFactory
+import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
 class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityDetailUserBinding
-    private val userViewModel: UserViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels {
+        ViewModelFactory.getInstance(this@DetailUserActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +68,7 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun subscribe(user: Users) {
-        userViewModel.apply {
+        mainViewModel.apply {
             setUser(user)
             getUser().observe(this@DetailUserActivity) {
                 if (it != null) {
@@ -128,7 +133,21 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(p0: View?) {
         if (p0?.id == R.id.floatingActionButton) {
-            onStartActivity()
+            val user = intent.getParcelableExtra<Users>(DATA_USER)
+            val tes = UsersEntity(
+                user?.login.toString(),
+                user?.name.toString(),
+                user?.avatarUrl,
+                user?.followers.toString(),
+                user?.following.toString(),
+                user?.company,
+                user?.location,
+                user?.publicRepos.toString(),
+                true
+            )
+            mainViewModel.insertFavoriteUser(tes)
+
+            binding.floatingActionButton.setBackgroundColor(Color.RED)
         }
     }
 

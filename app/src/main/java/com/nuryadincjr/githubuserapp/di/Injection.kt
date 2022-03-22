@@ -5,6 +5,7 @@ import com.nuryadincjr.githubuserapp.data.local.room.UsersDatabase
 import com.nuryadincjr.githubuserapp.data.remote.retrofit.ApiConfig
 import com.nuryadincjr.githubuserapp.data.repository.FollowRepository
 import com.nuryadincjr.githubuserapp.data.repository.UsersRepository
+import com.nuryadincjr.githubuserapp.util.AppExecutors
 
 object Injection {
     inline fun <reified T> provideRepository(context: Context): T? {

@@ -34,17 +34,17 @@ class FollowViewModel(private val followRepository: FollowRepository, login: Str
         return followRepository.statusCode
     }
 
-    fun getUsersFavorite() = followRepository.getUsersFavorite()
-
-    fun saveFavorite(usersEntity: UsersEntity) {
-        viewModelScope.launch {
-            followRepository.setUserFavorite(usersEntity)
-        }
-    }
-
-    fun deleteFavorite(login: String) {
-        viewModelScope.launch {
-            followRepository.deleteUserFavorite(login)
-        }
-    }
+//    fun getUsersFavorite() = followRepository.getUsersFavorite()
+//
+//    fun saveFavorite(usersEntity: UsersEntity) {
+//        viewModelScope.launch {
+//            followRepository.setUserFavorite(usersEntity)
+//        }
+//    }
+//
+//    fun deleteFavorite(login: String) {
+//        viewModelScope.launch {
+//            followRepository.deleteUserFavorite(login)
+//        }
+//    }
 }

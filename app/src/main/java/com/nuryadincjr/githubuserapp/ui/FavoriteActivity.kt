@@ -1,12 +1,20 @@
 package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.R
+import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityFavoriteBinding
+import com.nuryadincjr.githubuserapp.util.ViewModelFactory
+import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
 class FavoriteActivity : AppCompatActivity() {
 
@@ -24,6 +32,34 @@ class FavoriteActivity : AppCompatActivity() {
 
         binding = ActivityFavoriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val factory: ViewModelFactory = ViewModelFactory.getInstance(this)
+        val mainViewModel: MainViewModel by viewModels {
+            factory
+        }
+
+        val newsAdapter = ListUsersAdapter { news ->
+//            if (news.isFavourite) {
+//                mainViewModel.deleteNews(news)
+//            } else {
+//                mainViewModel.saveNews(news)
+//            }
+        }
+
+//        mainViewModel.getBookmarkedNews().observe(this) { bookmarkedNews ->
+//            binding.progressBar.visibility = View.GONE
+//            newsAdapter.submitList(bookmarkedNews)
+//        }
+
+        binding.rvFavorite.apply {
+            layoutManager =
+                if (applicationContext.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    GridLayoutManager(this@FavoriteActivity, 2)
+                } else LinearLayoutManager(this@FavoriteActivity)
+            setHasFixedSize(true)
+            adapter = newsAdapter
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
