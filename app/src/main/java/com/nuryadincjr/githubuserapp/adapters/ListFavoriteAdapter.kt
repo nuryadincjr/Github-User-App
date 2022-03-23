@@ -14,14 +14,14 @@ import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.ui.DetailUserActivity
 import com.nuryadincjr.githubuserapp.util.Constant
+import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 
-class ListFavoriteAdapter(private val onBookmarkClick: (UsersEntity) -> Unit) :
-    ListAdapter<UsersEntity, ListFavoriteAdapter.ListViewHolder>(DIFF_CALLBACK) {
+class ListFavoriteAdapter : ListAdapter<UsersEntity, ListFavoriteAdapter.ListViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding =
             ItemRowUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ListViewHolder(binding, this)
+        return ListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
@@ -30,8 +30,7 @@ class ListFavoriteAdapter(private val onBookmarkClick: (UsersEntity) -> Unit) :
     }
 
     class ListViewHolder(
-        private var binding: ItemRowUserBinding,
-        private var listUsersAdapter: ListFavoriteAdapter
+        private var binding: ItemRowUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun setDataToView(user: UsersEntity) {
@@ -63,7 +62,7 @@ class ListFavoriteAdapter(private val onBookmarkClick: (UsersEntity) -> Unit) :
                         Intent(
                             context,
                             DetailUserActivity::class.java
-                        ).putExtra(Constant.DATA_USER, users)
+                        ).putExtra(DATA_USER, users)
                     )
                 }
             }

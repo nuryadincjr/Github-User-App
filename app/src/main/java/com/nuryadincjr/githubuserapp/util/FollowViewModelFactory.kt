@@ -19,7 +19,7 @@ class FollowViewModelFactory(
     companion object {
         @Volatile
         private var instance: FollowViewModelFactory? = null
-        fun getInstance(context: Context, login: String?): FollowViewModelFactory =
+        fun getInstance(context: Context): FollowViewModelFactory =
             instance ?: synchronized(this) {
                 instance ?: FollowViewModelFactory(Injection.provideRepository(context))
             }.also { instance = it }

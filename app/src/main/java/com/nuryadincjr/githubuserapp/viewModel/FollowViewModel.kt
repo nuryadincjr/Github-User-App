@@ -1,10 +1,9 @@
 package com.nuryadincjr.githubuserapp.viewModel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nuryadincjr.githubuserapp.data.repository.FollowRepository
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
+import com.nuryadincjr.githubuserapp.data.repository.FollowRepository
 import com.nuryadincjr.githubuserapp.util.Event
 
 class FollowViewModel(private val followRepository: FollowRepository) : ViewModel() {
@@ -32,5 +31,4 @@ class FollowViewModel(private val followRepository: FollowRepository) : ViewMode
     fun statusCode(): LiveData<Event<String>> {
         return followRepository.statusCode
     }
-
 }

@@ -33,18 +33,20 @@ class SettingsActivity : AppCompatActivity() {
 
         val pref = SettingPreferences.getInstance(dataStore)
         val viewModel = ViewModelProvider(
-            this@SettingsActivity,
+            this,
             SettingsViewModelFactory(pref)
         )[SettingsViewModel::class.java]
 
         viewModel.getThemeSettings().observe(this) {
-            if (it) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                switchTheme.isChecked = true
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                switchTheme.isChecked = false
-            }
+            val themeMode =
+                if (it) {
+                    switchTheme.isChecked = true
+                    AppCompatDelegate.MODE_NIGHT_YES
+                } else {
+                    switchTheme.isChecked = false
+                    AppCompatDelegate.MODE_NIGHT_NO
+                }
+            AppCompatDelegate.setDefaultNightMode(themeMode)
         }
 
         switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
@@ -53,9 +55,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-        }
+        if (item.itemId == android.R.id.home) onBackPressed()
         return super.onOptionsItemSelected(item)
     }
 }

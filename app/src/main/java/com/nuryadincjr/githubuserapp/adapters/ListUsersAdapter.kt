@@ -1,38 +1,32 @@
 package com.nuryadincjr.githubuserapp.adapters
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nuryadincjr.githubuserapp.R
-import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.ui.DetailUserActivity
-import com.nuryadincjr.githubuserapp.util.Constant
+import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 
-class ListUsersAdapter(private val onBookmarkClick: (Users) -> Unit) :
-    ListAdapter<Users, ListUsersAdapter.ListViewHolder>(DIFF_CALLBACK) {
+class ListUsersAdapter(private val listUsers: List<Users>) :
+    RecyclerView.Adapter<ListUsersAdapter.ListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val binding =
-            ItemRowUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ListViewHolder(binding, this)
+        val binding = ItemRowUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val news = getItem(position)
-        holder.setDataToView(news)
+        holder.setDataToView(listUsers[position])
     }
 
+    override fun getItemCount(): Int = listUsers.size
 
     class ListViewHolder(
-        private var binding: ItemRowUserBinding,
-        private var listUsersAdapter: ListUsersAdapter
+        private var binding: ItemRowUserBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun setDataToView(user: Users) {
@@ -54,27 +48,10 @@ class ListUsersAdapter(private val onBookmarkClick: (Users) -> Unit) :
                         Intent(
                             context,
                             DetailUserActivity::class.java
-                        ).putExtra(Constant.DATA_USER, user)
+                        ).putExtra(DATA_USER, user)
                     )
                 }
             }
         }
-    }
-
-    companion object {
-        val DIFF_CALLBACK: DiffUtil.ItemCallback<Users> =
-            object : DiffUtil.ItemCallback<Users>() {
-                override fun areItemsTheSame(oldUser: Users, user: Users): Boolean {
-                    return oldUser.login == user.login
-                }
-
-                @SuppressLint("DiffUtilEquals")
-                override fun areContentsTheSame(
-                    oldUser: Users,
-                    user: Users
-                ): Boolean {
-                    return oldUser == user
-                }
-            }
     }
 }

@@ -3,11 +3,9 @@ package com.nuryadincjr.githubuserapp.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
-import com.nuryadincjr.githubuserapp.data.local.room.UsersDao
-import com.nuryadincjr.githubuserapp.data.remote.retrofit.ApiService
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.data.remote.response.UsersResponse
+import com.nuryadincjr.githubuserapp.data.remote.retrofit.ApiService
 import com.nuryadincjr.githubuserapp.util.Constant
 import com.nuryadincjr.githubuserapp.util.Event
 import retrofit2.Call
@@ -15,8 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class FollowRepository private constructor(
-    private val service: ApiService,
-    private val usersDao: UsersDao
+    private val service: ApiService
 ) {
     private var followersArrayListItem: ArrayList<Users>? = null
     private var followingArrayListItem: ArrayList<Users>? = null
@@ -136,10 +133,9 @@ class FollowRepository private constructor(
         private var instance: FollowRepository? = null
 
         fun getInstance(
-            apiService: ApiService,
-            usersDao: UsersDao
+            apiService: ApiService
         ): FollowRepository = instance ?: synchronized(this) {
-            instance ?: FollowRepository(apiService, usersDao)
+            instance ?: FollowRepository(apiService)
         }.also { instance = it }
     }
 }

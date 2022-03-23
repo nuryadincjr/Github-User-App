@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
-import com.nuryadincjr.githubuserapp.data.repository.UsersRepository
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
+import com.nuryadincjr.githubuserapp.data.repository.UsersRepository
 import com.nuryadincjr.githubuserapp.util.Event
 import kotlinx.coroutines.launch
 

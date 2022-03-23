@@ -2,17 +2,12 @@ package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
@@ -23,12 +18,11 @@ import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
 import com.nuryadincjr.githubuserapp.util.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
-
 class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
     private val mainViewModel: MainViewModel by viewModels {
-        ViewModelFactory.getInstance(this@DetailUserActivity)
+        ViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +31,7 @@ class DetailUserActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             title = resources.getString(R.string.detail_user)
-            this.setDisplayHomeAsUpEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
             elevation = 0f
         }
 
@@ -45,6 +39,9 @@ class DetailUserActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val user = intent.getParcelableExtra<Users>(DATA_USER)
+        val login = user?.login.toString()
+        val colorRed = ColorStateList.valueOf(resources.getColor(R.color.red))
+        val colorBlueGray = ColorStateList.valueOf(resources.getColor(R.color.blue_gray_secondary))
 
         mainViewModel.apply {
             if (user != null) setUser(user)
@@ -53,28 +50,23 @@ class DetailUserActivity : AppCompatActivity() {
                 setUserData(it)
             }
 
-            isUserFavorite(user?.login.toString()).observe(this@DetailUserActivity) {
-                if (it) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
-                    }else{
-                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.blue_gray_secondary))
+            isUserFavorite(login).observe(this@DetailUserActivity) {
+                binding.floatingActionButton.backgroundTintList = if (it) colorRed else colorBlueGray
+            }
+
+            binding.floatingActionButton.apply {
+                setOnClickListener {
+                    isUserFavorite(login).observe(this@DetailUserActivity) {
+                        backgroundTintList = if (it) {
+                            deleteFavorite(login)
+                            colorBlueGray
+                        } else {
+                            insertFavorite(user!!)
+                            colorRed
+                        }
                     }
                 }
             }
-
-            binding.floatingActionButton.setOnClickListener {
-                isUserFavorite(user?.login.toString()).observe(this@DetailUserActivity) {
-                    if (it) {
-                        deleteFavorite(user?.login.toString())
-                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.blue_gray_secondary))
-                    } else {
-                        insertFavorite(user!!)
-                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
-                    }
-                }
-            }
-
         }
     }
 

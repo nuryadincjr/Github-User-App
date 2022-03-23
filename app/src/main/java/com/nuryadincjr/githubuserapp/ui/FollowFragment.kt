@@ -1,9 +1,7 @@
 package com.nuryadincjr.githubuserapp.ui
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,24 +10,22 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nuryadincjr.githubuserapp.R
-import com.nuryadincjr.githubuserapp.adapters.ListFollowAdapter
-import com.nuryadincjr.githubuserapp.databinding.FragmentFollowBinding
+import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
+import com.nuryadincjr.githubuserapp.databinding.FragmentFollowBinding
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_LOGIN
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_SECTION_NUMBER
-import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.SPAN_COUNT
-import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
 import com.nuryadincjr.githubuserapp.util.FollowViewModelFactory
+import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
 
 class FollowFragment : Fragment() {
 
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
-    private var login: String? = ""
+    private var login: String = ""
     private val followViewModel: FollowViewModel by viewModels {
-        FollowViewModelFactory.getInstance(requireContext(), login)
+        FollowViewModelFactory.getInstance(requireContext())
     }
 
     override fun onCreateView(
@@ -47,22 +43,15 @@ class FollowFragment : Fragment() {
         login = arguments?.getString(ARG_LOGIN).toString()
 
         followViewModel.apply {
-
             if (index == 0) {
-                getFollowers(login.toString())
-                getFollowers().observe(viewLifecycleOwner) {
-                    showRecyclerList(it)
-                }
+                getFollowers(login)
+                getFollowers().observe(viewLifecycleOwner) { showRecyclerList(it) }
             } else {
-                getFollowing(login.toString())
-                getFollowing().observe(viewLifecycleOwner) {
-                    showRecyclerList(it)
-                }
+                getFollowing(login)
+                getFollowing().observe(viewLifecycleOwner) { showRecyclerList(it) }
             }
 
-            isLoading().observe(viewLifecycleOwner) {
-                showLoading(it)
-            }
+            isLoading().observe(viewLifecycleOwner) { showLoading(it) }
 
             statusCode().observe(viewLifecycleOwner) {
                 it.getContentIfNotHandled()?.let { respond ->
@@ -79,30 +68,19 @@ class FollowFragment : Fragment() {
     }
 
     private fun showRecyclerList(listUsers: List<Users>) {
-        val listUsersAdapter = ListFollowAdapter(listUsers)
+        val listUsersAdapter = ListUsersAdapter(listUsers)
 
         binding?.rvFollow?.apply {
             layoutManager =
                 if (context?.resources?.configuration?.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     GridLayoutManager(context, SPAN_COUNT)
                 } else LinearLayoutManager(context)
+            setHasFixedSize(true)
             adapter = listUsersAdapter
         }
-
-        listUsersAdapter.setOnItemClickCallback(object : ListFollowAdapter.OnItemClickCallback {
-            override fun onItemClicked(view: View, position: Int) {
-                onStartActivity(listUsers[position])
-            }
-        })
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding?.progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun onStartActivity(usersItem: Users) {
-        val detailIntent = Intent(context, DetailUserActivity::class.java)
-        detailIntent.putExtra(DATA_USER, usersItem)
-        startActivity(detailIntent)
     }
 }
