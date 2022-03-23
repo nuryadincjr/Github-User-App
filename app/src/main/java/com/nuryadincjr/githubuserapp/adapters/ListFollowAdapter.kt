@@ -46,7 +46,6 @@ class ListFollowAdapter(private val listFollowItems: List<Users>) :
                     .into(ivAvatar)
             }
 
-            binding.ivFavorite.setOnClickListener(this)
             itemView.setOnClickListener(this)
         }
 

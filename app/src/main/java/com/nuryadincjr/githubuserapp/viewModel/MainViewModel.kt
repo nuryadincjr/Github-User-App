@@ -11,6 +11,15 @@ import com.nuryadincjr.githubuserapp.util.Event
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() {
+    private val _user = MutableLiveData<Users>()
+
+    fun setUser(user: Users) {
+        _user.value = user
+    }
+
+    fun getUser(): LiveData<Users?> {
+        return _user
+    }
 
     init {
         usersRepository.findUsers()
@@ -30,33 +39,19 @@ class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() 
         return usersRepository.statusCode
     }
 
-    fun saveFavorite(usersEntity: UsersEntity) {
+    fun getUsersFavorite() = usersRepository.getUsersFavorite()
+
+    fun isUserFavorite(login: String) = usersRepository.isUserFavorite(login)
+
+    fun insertFavorite(user: Users) {
         viewModelScope.launch {
-            usersRepository.setUserFavorite(usersEntity, true)
+            usersRepository.insertFavorite(user)
         }
     }
 
-    fun deleteFavorite(usersEntity: UsersEntity) {
+    fun deleteFavorite(login: String) {
         viewModelScope.launch {
-            usersRepository.setUserFavorite(usersEntity, false)
+            usersRepository.deleteFavorite(login)
         }
-    }
-
-    private val _user = MutableLiveData<Users>()
-
-    fun setUser(user: Users) {
-        _user.value = user
-    }
-
-    fun getUser(): LiveData<Users?> {
-        return _user
-    }
-
-    fun insertFavoriteUser(user: UsersEntity) = viewModelScope.launch {
-        usersRepository.insertFavoriteUser(user)
-    }
-
-    fun deleteFavoriteUser(user: UsersEntity) = viewModelScope.launch {
-        usersRepository.deleteFavoriteUser(user)
     }
 }

@@ -3,6 +3,7 @@ package com.nuryadincjr.githubuserapp.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.data.local.room.UsersDao
 import com.nuryadincjr.githubuserapp.data.remote.response.ItemsSearchItem
@@ -10,7 +11,6 @@ import com.nuryadincjr.githubuserapp.data.remote.response.SearchUsersResponse
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.data.remote.response.UsersResponse
 import com.nuryadincjr.githubuserapp.data.remote.retrofit.ApiService
-import com.nuryadincjr.githubuserapp.util.AppExecutors
 import com.nuryadincjr.githubuserapp.util.Constant
 import com.nuryadincjr.githubuserapp.util.Event
 import retrofit2.Call
@@ -127,14 +127,31 @@ class UsersRepository private constructor(
         return usersDao.getUsersFavorite()
     }
 
-    suspend fun setUserFavorite(usersEntity: UsersEntity, favoriteState: Boolean) {
-        usersEntity.isFavourite = favoriteState
-        usersDao.updateUser(usersEntity)
+    fun isUserFavorite(login: String): LiveData<Boolean> = liveData {
+        val isFavoriteRespone: Boolean = usersDao.isFavorite(login)
+        val _isFavorite = MutableLiveData<Boolean>()
+        _isFavorite.postValue(isFavoriteRespone)
+
+        val isFavorite: LiveData<Boolean> = _isFavorite
+        emitSource(isFavorite)
     }
 
-    suspend fun insertFavoriteUser(user: UsersEntity) = usersDao.insertFavoriteUser(user)
+    suspend fun insertFavorite(user: Users) {
+        val usersEntity = UsersEntity(
+            user.login.toString(),
+            user.name.toString(),
+            user.avatarUrl,
+            user.followers.toString(),
+            user.following.toString(),
+            user.company,
+            user.location,
+            user.publicRepos.toString(),
+            true
+        )
+        usersDao.insertFavorite(usersEntity)
+    }
 
-    suspend fun deleteFavoriteUser(user: UsersEntity) = usersDao.deleteFavoriteUser(user)
+    suspend fun deleteFavorite(login: String) = usersDao.deleteFavorite(login)
 
     companion object {
         private const val TAG = "UsersRepository"

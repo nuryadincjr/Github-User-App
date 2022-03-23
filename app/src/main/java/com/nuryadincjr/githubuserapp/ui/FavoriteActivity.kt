@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nuryadincjr.githubuserapp.R
-import com.nuryadincjr.githubuserapp.adapters.ListUsersAdapter
+import com.nuryadincjr.githubuserapp.adapters.ListFavoriteAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityFavoriteBinding
 import com.nuryadincjr.githubuserapp.util.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
@@ -19,6 +19,9 @@ import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 class FavoriteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFavoriteBinding
+    private val mainViewModel: MainViewModel by viewModels {
+        ViewModelFactory.getInstance(this@FavoriteActivity)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +36,7 @@ class FavoriteActivity : AppCompatActivity() {
         binding = ActivityFavoriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val factory: ViewModelFactory = ViewModelFactory.getInstance(this)
-        val mainViewModel: MainViewModel by viewModels {
-            factory
-        }
-
-        val newsAdapter = ListUsersAdapter { news ->
+        val favoriteAdapter = ListFavoriteAdapter {
 //            if (news.isFavourite) {
 //                mainViewModel.deleteNews(news)
 //            } else {
@@ -46,10 +44,10 @@ class FavoriteActivity : AppCompatActivity() {
 //            }
         }
 
-//        mainViewModel.getBookmarkedNews().observe(this) { bookmarkedNews ->
-//            binding.progressBar.visibility = View.GONE
-//            newsAdapter.submitList(bookmarkedNews)
-//        }
+        mainViewModel.getUsersFavorite().observe(this) {
+            binding.progressBar.visibility = View.GONE
+            favoriteAdapter.submitList(it)
+        }
 
         binding.rvFavorite.apply {
             layoutManager =
@@ -57,9 +55,8 @@ class FavoriteActivity : AppCompatActivity() {
                     GridLayoutManager(this@FavoriteActivity, 2)
                 } else LinearLayoutManager(this@FavoriteActivity)
             setHasFixedSize(true)
-            adapter = newsAdapter
+            adapter = favoriteAdapter
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

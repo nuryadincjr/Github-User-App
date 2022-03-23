@@ -9,12 +9,11 @@ import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
 
 class FollowViewModelFactory(
     private val followRepository: FollowRepository?,
-    private val login: String?
 ) :
-    ViewModelProvider.NewInstanceFactory() {
+    ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return FollowViewModel(followRepository!!, login.toString()) as T
+        return FollowViewModel(followRepository!!) as T
     }
 
     companion object {
@@ -22,7 +21,7 @@ class FollowViewModelFactory(
         private var instance: FollowViewModelFactory? = null
         fun getInstance(context: Context, login: String?): FollowViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: FollowViewModelFactory(Injection.provideRepository(context), login)
+                instance ?: FollowViewModelFactory(Injection.provideRepository(context))
             }.also { instance = it }
     }
 }

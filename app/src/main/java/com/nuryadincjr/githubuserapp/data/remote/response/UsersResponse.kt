@@ -83,7 +83,7 @@ data class Users(
     val createdAt: String? = null,
 
     @field:SerializedName("login")
-    val login: String? = null,
+    var login: String? = null,
 
     @field:SerializedName("type")
     val type: String? = null,
@@ -101,13 +101,13 @@ data class Users(
     val siteAdmin: Boolean? = null,
 
     @field:SerializedName("company")
-    val company: String? = null,
+    var company: String? = null,
 
     @field:SerializedName("id")
     val id: Int? = null,
 
     @field:SerializedName("public_repos")
-    val publicRepos: Int? = null,
+    var publicRepos: Int? = null,
 
     @field:SerializedName("gravatar_id")
     val gravatarId: String? = null,
@@ -137,10 +137,10 @@ data class Users(
     val receivedEventsUrl: String? = null,
 
     @field:SerializedName("followers")
-    val followers: Int? = null,
+    var followers: Int? = null,
 
     @field:SerializedName("avatar_url")
-    val avatarUrl: String? = null,
+    var avatarUrl: String? = null,
 
     @field:SerializedName("events_url")
     val eventsUrl: String? = null,
@@ -149,13 +149,13 @@ data class Users(
     val htmlUrl: String? = null,
 
     @field:SerializedName("following")
-    val following: Int? = null,
+    var following: Int? = null,
 
     @field:SerializedName("name")
-    val name: String? = null,
+    var name: String? = null,
 
     @field:SerializedName("location")
-    val location: String? = null,
+    var location: String? = null,
 
     @field:SerializedName("node_id")
     val nodeId: String? = null

@@ -15,8 +15,8 @@ import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.ui.DetailUserActivity
 import com.nuryadincjr.githubuserapp.util.Constant
 
-class ListUsersAdapter(private val onBookmarkClick: (Users) -> Unit) :
-    ListAdapter<Users, ListUsersAdapter.ListViewHolder>(DIFF_CALLBACK) {
+class ListFavoriteAdapter(private val onBookmarkClick: (UsersEntity) -> Unit) :
+    ListAdapter<UsersEntity, ListFavoriteAdapter.ListViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding =
@@ -29,13 +29,12 @@ class ListUsersAdapter(private val onBookmarkClick: (Users) -> Unit) :
         holder.setDataToView(news)
     }
 
-
     class ListViewHolder(
         private var binding: ItemRowUserBinding,
-        private var listUsersAdapter: ListUsersAdapter
+        private var listUsersAdapter: ListFavoriteAdapter
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun setDataToView(user: Users) {
+        fun setDataToView(user: UsersEntity) {
             binding.apply {
                 tvUsername.text = user.login
                 tvName.text = user.name
@@ -48,13 +47,23 @@ class ListUsersAdapter(private val onBookmarkClick: (Users) -> Unit) :
                     .into(ivAvatar)
             }
 
+            val users = Users()
+            users.login = user.login
+            users.name = user.name
+            users.avatarUrl = user.avatarUrl
+            users.followers = user.followers?.toInt()
+            users.following = user.following?.toInt()
+            users.company = user.company
+            users.location = user.location
+            users.publicRepos = user.publicRepos?.toInt()
+
             itemView.apply {
                 setOnClickListener {
                     context.startActivity(
                         Intent(
                             context,
                             DetailUserActivity::class.java
-                        ).putExtra(Constant.DATA_USER, user)
+                        ).putExtra(Constant.DATA_USER, users)
                     )
                 }
             }
@@ -62,16 +71,16 @@ class ListUsersAdapter(private val onBookmarkClick: (Users) -> Unit) :
     }
 
     companion object {
-        val DIFF_CALLBACK: DiffUtil.ItemCallback<Users> =
-            object : DiffUtil.ItemCallback<Users>() {
-                override fun areItemsTheSame(oldUser: Users, user: Users): Boolean {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<UsersEntity> =
+            object : DiffUtil.ItemCallback<UsersEntity>() {
+                override fun areItemsTheSame(oldUser: UsersEntity, user: UsersEntity): Boolean {
                     return oldUser.login == user.login
                 }
 
                 @SuppressLint("DiffUtilEquals")
                 override fun areContentsTheSame(
-                    oldUser: Users,
-                    user: Users
+                    oldUser: UsersEntity,
+                    user: UsersEntity
                 ): Boolean {
                     return oldUser == user
                 }

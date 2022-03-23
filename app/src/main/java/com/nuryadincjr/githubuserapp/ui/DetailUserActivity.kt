@@ -1,18 +1,21 @@
 package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
-import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
@@ -20,7 +23,8 @@ import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
 import com.nuryadincjr.githubuserapp.util.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
-class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
+
+class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
     private val mainViewModel: MainViewModel by viewModels {
@@ -42,9 +46,35 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
 
         val user = intent.getParcelableExtra<Users>(DATA_USER)
 
-        binding.floatingActionButton.setOnClickListener(this)
-        if (user != null) {
-            subscribe(user)
+        mainViewModel.apply {
+            if (user != null) setUser(user)
+            getUser().observe(this@DetailUserActivity) {
+                if (it != null) sectionsPager(it)
+                setUserData(it)
+            }
+
+            isUserFavorite(user?.login.toString()).observe(this@DetailUserActivity) {
+                if (it) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
+                    }else{
+                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.blue_gray_secondary))
+                    }
+                }
+            }
+
+            binding.floatingActionButton.setOnClickListener {
+                isUserFavorite(user?.login.toString()).observe(this@DetailUserActivity) {
+                    if (it) {
+                        deleteFavorite(user?.login.toString())
+                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.blue_gray_secondary))
+                    } else {
+                        insertFavorite(user!!)
+                        binding.floatingActionButton.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.red))
+                    }
+                }
+            }
+
         }
     }
 
@@ -65,18 +95,6 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun subscribe(user: Users) {
-        mainViewModel.apply {
-            setUser(user)
-            getUser().observe(this@DetailUserActivity) {
-                if (it != null) {
-                    sectionsPager(it)
-                }
-                setUserData(it)
-            }
-        }
     }
 
     private fun sectionsPager(user: Users) {
@@ -129,30 +147,5 @@ class DetailUserActivity : AppCompatActivity(), View.OnClickListener {
                 startActivity(shareUserIntent)
             }
         }
-    }
-
-    override fun onClick(p0: View?) {
-        if (p0?.id == R.id.floatingActionButton) {
-            val user = intent.getParcelableExtra<Users>(DATA_USER)
-            val tes = UsersEntity(
-                user?.login.toString(),
-                user?.name.toString(),
-                user?.avatarUrl,
-                user?.followers.toString(),
-                user?.following.toString(),
-                user?.company,
-                user?.location,
-                user?.publicRepos.toString(),
-                true
-            )
-            mainViewModel.insertFavoriteUser(tes)
-
-            binding.floatingActionButton.setBackgroundColor(Color.RED)
-        }
-    }
-
-    private fun onStartActivity() {
-        val detailIntent = Intent(this, FavoriteActivity::class.java)
-        startActivity(detailIntent)
     }
 }

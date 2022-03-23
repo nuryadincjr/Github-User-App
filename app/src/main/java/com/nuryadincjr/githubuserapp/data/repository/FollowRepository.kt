@@ -127,18 +127,6 @@ class FollowRepository private constructor(
         })
     }
 
-//    fun getUsersFavorite(): LiveData<List<UsersEntity>> {
-//        return usersDao.getUsersFavorite()
-//    }
-//
-//    suspend fun setUserFavorite(usersEntity: UsersEntity) {
-//        usersDao.insertToFavorite(usersEntity)
-//    }
-//
-//    fun deleteUserFavorite(login: String) {
-//        usersDao.deleteFromFavorite(login)
-//    }
-
     companion object {
         private const val TAG = "FollowRepository"
         private const val STAT_FOLLOWING = "Statement_Following"

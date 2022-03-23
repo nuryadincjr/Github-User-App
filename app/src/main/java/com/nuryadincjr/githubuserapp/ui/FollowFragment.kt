@@ -3,6 +3,7 @@ package com.nuryadincjr.githubuserapp.ui
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +28,9 @@ class FollowFragment : Fragment() {
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
     private var login: String? = ""
-
+    private val followViewModel: FollowViewModel by viewModels {
+        FollowViewModelFactory.getInstance(requireContext(), login)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,16 +46,15 @@ class FollowFragment : Fragment() {
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
         login = arguments?.getString(ARG_LOGIN).toString()
 
-        val followViewModel: FollowViewModel by viewModels {
-            FollowViewModelFactory.getInstance(requireContext(), login)
-        }
-
         followViewModel.apply {
+
             if (index == 0) {
+                getFollowers(login.toString())
                 getFollowers().observe(viewLifecycleOwner) {
                     showRecyclerList(it)
                 }
             } else {
+                getFollowing(login.toString())
                 getFollowing().observe(viewLifecycleOwner) {
                     showRecyclerList(it)
                 }
@@ -89,11 +91,7 @@ class FollowFragment : Fragment() {
 
         listUsersAdapter.setOnItemClickCallback(object : ListFollowAdapter.OnItemClickCallback {
             override fun onItemClicked(view: View, position: Int) {
-                if (view.id == R.id.iv_favorite) {
-                    startActivity(Intent(requireContext(), FavoriteActivity::class.java))
-                } else {
-                    onStartActivity(listUsers[position])
-                }
+                onStartActivity(listUsers[position])
             }
         })
     }
