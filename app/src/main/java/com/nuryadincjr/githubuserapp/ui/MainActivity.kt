@@ -26,8 +26,8 @@ import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ActivityMainBinding
 import com.nuryadincjr.githubuserapp.util.Constant
 import com.nuryadincjr.githubuserapp.util.SettingPreferences
-import com.nuryadincjr.githubuserapp.util.SettingsViewModelFactory
-import com.nuryadincjr.githubuserapp.util.ViewModelFactory
+import com.nuryadincjr.githubuserapp.util.factory.SettingsViewModelFactory
+import com.nuryadincjr.githubuserapp.util.factory.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 import com.nuryadincjr.githubuserapp.viewModel.SettingsViewModel
 

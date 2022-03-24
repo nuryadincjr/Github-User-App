@@ -5,6 +5,7 @@ import com.nuryadincjr.githubuserapp.BuildConfig.*
 import com.nuryadincjr.githubuserapp.util.Constant.BASE_URL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.HttpLoggingInterceptor.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.String.format
@@ -12,13 +13,10 @@ import java.lang.String.format
 class ApiConfig {
     companion object {
         fun getApiService(): ApiService {
-
             val logger = HttpLoggingInterceptor()
             val loggingInterceptor = if (BuildConfig.DEBUG) {
-                logger.setLevel(HttpLoggingInterceptor.Level.BODY)
-            } else {
-                logger.setLevel(HttpLoggingInterceptor.Level.NONE)
-            }
+                logger.setLevel(Level.BODY)
+            } else logger.setLevel(Level.NONE)
 
             val client = OkHttpClient.Builder()
                 .addInterceptor {

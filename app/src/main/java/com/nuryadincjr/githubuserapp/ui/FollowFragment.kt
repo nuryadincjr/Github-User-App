@@ -16,7 +16,7 @@ import com.nuryadincjr.githubuserapp.databinding.FragmentFollowBinding
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_LOGIN
 import com.nuryadincjr.githubuserapp.util.Constant.ARG_SECTION_NUMBER
 import com.nuryadincjr.githubuserapp.util.Constant.SPAN_COUNT
-import com.nuryadincjr.githubuserapp.util.FollowViewModelFactory
+import com.nuryadincjr.githubuserapp.util.factory.FollowViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
 
 class FollowFragment : Fragment() {

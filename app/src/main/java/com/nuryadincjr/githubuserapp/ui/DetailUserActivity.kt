@@ -15,7 +15,7 @@ import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
-import com.nuryadincjr.githubuserapp.util.ViewModelFactory
+import com.nuryadincjr.githubuserapp.util.factory.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
 class DetailUserActivity : AppCompatActivity() {

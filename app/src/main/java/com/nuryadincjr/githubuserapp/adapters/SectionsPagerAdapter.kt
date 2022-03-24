@@ -13,9 +13,7 @@ class SectionsPagerAdapter(activity: AppCompatActivity) : FragmentStateAdapter(a
 
     var login: String = ""
 
-    override fun getItemCount(): Int {
-        return TAB_TITLES.size
-    }
+    override fun getItemCount(): Int = TAB_TITLES.size
 
     override fun createFragment(position: Int): Fragment {
         val fragment = FollowFragment()

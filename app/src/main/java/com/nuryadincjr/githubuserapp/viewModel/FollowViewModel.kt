@@ -20,11 +20,7 @@ class FollowViewModel(
         return followRepository.followingResponseItem
     }
 
-    fun isLoading(): LiveData<Boolean> {
-        return followRepository.isLoading
-    }
+    fun isLoading(): LiveData<Boolean> = followRepository.isLoading
 
-    fun statusCode(): LiveData<Event<String>> {
-        return followRepository.statusCode
-    }
+    fun statusCode(): LiveData<Event<String>> = followRepository.statusCode
 }

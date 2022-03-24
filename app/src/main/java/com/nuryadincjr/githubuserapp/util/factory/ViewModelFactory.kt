@@ -1,4 +1,4 @@
-package com.nuryadincjr.githubuserapp.util
+package com.nuryadincjr.githubuserapp.util.factory
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -7,12 +7,12 @@ import com.nuryadincjr.githubuserapp.data.repository.UsersRepository
 import com.nuryadincjr.githubuserapp.di.Injection
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
-class ViewModelFactory(private val newsRepository: UsersRepository?) :
+class ViewModelFactory(private val usersRepository: UsersRepository?) :
     ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(newsRepository!!) as T
+            return MainViewModel(usersRepository!!) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

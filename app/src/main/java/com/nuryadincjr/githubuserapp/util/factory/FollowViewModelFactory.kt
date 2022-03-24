@@ -1,4 +1,4 @@
-package com.nuryadincjr.githubuserapp.util
+package com.nuryadincjr.githubuserapp.util.factory
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

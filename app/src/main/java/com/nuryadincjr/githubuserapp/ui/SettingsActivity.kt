@@ -13,7 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.util.SettingPreferences
-import com.nuryadincjr.githubuserapp.util.SettingsViewModelFactory
+import com.nuryadincjr.githubuserapp.util.factory.SettingsViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.SettingsViewModel
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -25,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
 
         supportActionBar?.apply {
             title = resources.getString(R.string.setting)
-            this.setDisplayHomeAsUpEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
             elevation = 0f
         }
 

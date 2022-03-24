@@ -16,27 +16,19 @@ class MainViewModel(private val usersRepository: UsersRepository) : ViewModel() 
         _user.value = user
     }
 
-    fun getUser(): LiveData<Users?> {
-        return _user
-    }
+    fun getUser(): LiveData<Users?> = _user
 
     init {
         usersRepository.findUsers()
     }
 
-    fun getUsers(): LiveData<List<Users>> {
-        return usersRepository.userResponseItem
-    }
+    fun getUsers(): LiveData<List<Users>> = usersRepository.userResponseItem
 
     fun searchUsers(string: String) = usersRepository.searchUsers(string)
 
-    fun isLoading(): LiveData<Boolean> {
-        return usersRepository.isLoading
-    }
+    fun isLoading(): LiveData<Boolean> = usersRepository.isLoading
 
-    fun statusCode(): LiveData<Event<String>> {
-        return usersRepository.statusCode
-    }
+    fun statusCode(): LiveData<Event<String>> = usersRepository.statusCode
 
     fun getUsersFavorite() = usersRepository.getUsersFavorite()
 

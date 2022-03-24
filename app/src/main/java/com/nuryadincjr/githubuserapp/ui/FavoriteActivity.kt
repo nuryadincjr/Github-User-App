@@ -14,14 +14,14 @@ import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.ListFavoriteAdapter
 import com.nuryadincjr.githubuserapp.databinding.ActivityFavoriteBinding
 import com.nuryadincjr.githubuserapp.util.Constant.SPAN_COUNT
-import com.nuryadincjr.githubuserapp.util.ViewModelFactory
+import com.nuryadincjr.githubuserapp.util.factory.ViewModelFactory
 import com.nuryadincjr.githubuserapp.viewModel.MainViewModel
 
 class FavoriteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFavoriteBinding
     private val mainViewModel: MainViewModel by viewModels {
-        ViewModelFactory.getInstance(this@FavoriteActivity)
+        ViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
