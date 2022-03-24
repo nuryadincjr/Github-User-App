@@ -10,7 +10,7 @@ import com.nuryadincjr.githubuserapp.viewModel.FollowViewModel
 class FollowViewModelFactory(
     private val followRepository: FollowRepository?,
 ) :
-    ViewModelProvider.Factory {
+    ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return FollowViewModel(followRepository!!) as T

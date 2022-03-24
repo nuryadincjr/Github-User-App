@@ -6,21 +6,17 @@ import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.data.repository.FollowRepository
 import com.nuryadincjr.githubuserapp.util.Event
 
-class FollowViewModel(private val followRepository: FollowRepository) : ViewModel() {
+class FollowViewModel(
+    private val followRepository: FollowRepository,
+) : ViewModel() {
 
-    fun getFollowers(login: String) {
-        return followRepository.findFollowers(login)
-    }
-
-    fun getFollowing(login: String) {
-        return followRepository.findFollowing(login)
-    }
-
-    fun getFollowers(): LiveData<List<Users>> {
+    fun getFollowers(login: String): LiveData<List<Users>> {
+        followRepository.findFollowers(login)
         return followRepository.followersResponseItem
     }
 
-    fun getFollowing(): LiveData<List<Users>> {
+    fun getFollowing(login: String): LiveData<List<Users>> {
+        followRepository.findFollowing(login)
         return followRepository.followingResponseItem
     }
 

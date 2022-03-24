@@ -40,15 +40,13 @@ class FollowFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
-        login = arguments?.getString(ARG_LOGIN).toString()
 
         followViewModel.apply {
+            login = arguments?.getString(ARG_LOGIN).toString()
             if (index == 0) {
-                getFollowers(login)
-                getFollowers().observe(viewLifecycleOwner) { showRecyclerList(it) }
+                getFollowers(login).observe(viewLifecycleOwner) { showRecyclerList(it) }
             } else {
-                getFollowing(login)
-                getFollowing().observe(viewLifecycleOwner) { showRecyclerList(it) }
+                getFollowing(login).observe(viewLifecycleOwner) { showRecyclerList(it) }
             }
 
             isLoading().observe(viewLifecycleOwner) { showLoading(it) }
