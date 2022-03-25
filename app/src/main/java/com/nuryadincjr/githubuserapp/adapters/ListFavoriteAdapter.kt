@@ -13,7 +13,6 @@ import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ItemRowUserBinding
 import com.nuryadincjr.githubuserapp.ui.DetailUserActivity
-import com.nuryadincjr.githubuserapp.util.Constant
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 
 class ListFavoriteAdapter : ListAdapter<UsersEntity, ListFavoriteAdapter.ListViewHolder>(DIFF_CALLBACK) {
