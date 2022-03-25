@@ -23,7 +23,7 @@ class FollowFragment : Fragment() {
 
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
-    private var login: String = ""
+
     private val followViewModel: FollowViewModel by viewModels {
         FollowViewModelFactory.getInstance(requireContext())
     }
@@ -40,9 +40,18 @@ class FollowFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
+        val login = arguments?.getString(ARG_LOGIN).toString()
 
+        onSubscribeViewModel(index, login)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    private fun onSubscribeViewModel(index: Int?, login: String) {
         followViewModel.apply {
-            login = arguments?.getString(ARG_LOGIN).toString()
             if (index == 0) {
                 getFollowers(login).observe(viewLifecycleOwner) { showRecyclerList(it) }
             } else {
@@ -58,11 +67,6 @@ class FollowFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
     private fun showRecyclerList(listUsers: List<Users>) {

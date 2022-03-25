@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.*
+import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -27,6 +27,7 @@ class MainViewModelTest {
         mockContext = mock(MainActivity::class.java)
         usersRepository = mock(UsersRepository::class.java)
         mainViewModel = MainViewModel(usersRepository)
+
     }
 
     @Test
@@ -47,15 +48,6 @@ class MainViewModelTest {
         assertEquals(true, isFavorite)
     }
 
-    @Test
-    fun isMockUserFavorite() {
-        `when`(mainViewModel.isUserFavorite(userDummy).value)
-            .thenReturn(true)
-        val isFavorite = mainViewModel.isUserFavorite(userDummy).value
-        verify(usersRepository).isUserFavorite(userDummy)
-
-        assertEquals(true, isFavorite)
-    }
 
     @Test
     fun insertFavorite() {

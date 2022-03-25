@@ -34,6 +34,4 @@ class UsersEntity(
     @field:ColumnInfo(name = "public_repos")
     val publicRepos: String? = null,
 
-    @field:ColumnInfo(name = "favourite")
-    var isFavourite: Boolean
 ) : Parcelable

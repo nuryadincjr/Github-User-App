@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -31,22 +31,22 @@ class SettingsActivity : AppCompatActivity() {
 
         val switchTheme = findViewById<SwitchMaterial>(R.id.switch_theme)
 
-        val pref = SettingPreferences.getInstance(dataStore)
+        val settingPreferences = SettingPreferences.getInstance(dataStore)
         val viewModel = ViewModelProvider(
             this,
-            SettingsViewModelFactory(pref)
+            SettingsViewModelFactory(settingPreferences)
         )[SettingsViewModel::class.java]
 
         viewModel.getThemeSettings().observe(this) {
             val themeMode =
                 if (it) {
                     switchTheme.isChecked = true
-                    AppCompatDelegate.MODE_NIGHT_YES
+                    MODE_NIGHT_YES
                 } else {
                     switchTheme.isChecked = false
-                    AppCompatDelegate.MODE_NIGHT_NO
+                    MODE_NIGHT_NO
                 }
-            AppCompatDelegate.setDefaultNightMode(themeMode)
+            setDefaultNightMode(themeMode)
         }
 
         switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->

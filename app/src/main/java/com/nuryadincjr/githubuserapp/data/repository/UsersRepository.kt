@@ -50,8 +50,8 @@ class UsersRepository private constructor(
                     _usersResponse.value = response.body()
                     usersArrayListItem = ArrayList()
 
-                    for (i in 0 until usersResponse.value?.size!!) {
-                        findUser(usersResponse.value?.get(i)?.login.toString())
+                    usersResponse.value?.forEach{
+                        findUser(it.login)
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
@@ -106,7 +106,6 @@ class UsersRepository private constructor(
             ) {
                 _isLoading.value = false
                 if (responseItem.isSuccessful) {
-
                     responseItem.body()?.let { usersArrayListItem?.add(it) }
                     _userResponseItem.value = usersArrayListItem!!
                 } else {
@@ -123,9 +122,7 @@ class UsersRepository private constructor(
         })
     }
 
-    fun getUsersFavorite(): LiveData<List<UsersEntity>> {
-        return usersDao.getUsersFavorite()
-    }
+    fun getUsersFavorite(): LiveData<List<UsersEntity>> = usersDao.getUsersFavorite()
 
     fun isUserFavorite(login: String): LiveData<Boolean> = liveData {
         val isFavoriteRespone: Boolean = usersDao.isFavorite(login)
@@ -145,8 +142,7 @@ class UsersRepository private constructor(
             user.following.toString(),
             user.company,
             user.location,
-            user.publicRepos.toString(),
-            true
+            user.publicRepos.toString()
         )
         usersDao.insertFavorite(usersEntity)
     }

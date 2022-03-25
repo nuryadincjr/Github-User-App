@@ -13,7 +13,10 @@ class FollowViewModelFactory(
     ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return FollowViewModel(followRepository!!) as T
+        if (modelClass.isAssignableFrom(FollowViewModel::class.java)) {
+            return FollowViewModel(followRepository!!) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class: $modelClass.name")
     }
 
     companion object {

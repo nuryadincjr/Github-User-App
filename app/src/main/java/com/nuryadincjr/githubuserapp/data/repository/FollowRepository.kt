@@ -48,8 +48,8 @@ class FollowRepository private constructor(
                     _followersResponse.value = response.body()
                     followersArrayListItem = ArrayList()
 
-                    for (i in 0 until followersResponse.value?.size!!) {
-                        findUser(followersResponse.value?.get(i)?.login.toString(), STAT_FOLLOWERS)
+                    followersResponse.value?.forEach{
+                        findUser(it.login, STAT_FOLLOWERS)
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
@@ -77,8 +77,8 @@ class FollowRepository private constructor(
                     _followingResponse.value = response.body()
                     followingArrayListItem = ArrayList()
 
-                    for (i in 0 until followingResponse.value?.size!!) {
-                        findUser(followingResponse.value?.get(i)?.login.toString(), STAT_FOLLOWING)
+                    followingResponse.value?.forEach{
+                        findUser(it.login, STAT_FOLLOWING)
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")

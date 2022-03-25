@@ -24,9 +24,9 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MainActivityTest {
-    private val quary = "nuryadin"
+    private val query = "nuryadin"
     private val userDummy = "nuryadincjr"
-    private val ITEM_BELOW_THE_FOLD = 0
+    private val position = 0
 
     @Before
     fun setup() {
@@ -54,7 +54,7 @@ class MainActivityTest {
     fun itemWithText_doesNotExist() {
         onView(withId(R.id.sv_user)).check(matches(isDisplayed()))
         onView(withId(R.id.sv_user)).perform(
-            typeSearchViewText(quary),
+            typeSearchViewText(query),
             pressKey(KeyEvent.KEYCODE_ENTER)
         )
 
@@ -69,7 +69,7 @@ class MainActivityTest {
 
         onView(withId(R.id.rv_users)).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
-                ITEM_BELOW_THE_FOLD, click()
+                position, click()
             )
         )
     }

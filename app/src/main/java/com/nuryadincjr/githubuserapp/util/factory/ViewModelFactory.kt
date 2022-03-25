@@ -14,7 +14,7 @@ class ViewModelFactory(private val usersRepository: UsersRepository?) :
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(usersRepository!!) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
+        throw IllegalArgumentException("Unknown ViewModel class: $modelClass.name")
     }
 
     companion object {

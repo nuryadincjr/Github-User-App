@@ -2,6 +2,8 @@ package com.nuryadincjr.githubuserapp.ui
 
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,6 +15,8 @@ import com.nuryadincjr.githubuserapp.R
 import com.nuryadincjr.githubuserapp.adapters.SectionsPagerAdapter
 import com.nuryadincjr.githubuserapp.data.remote.response.Users
 import com.nuryadincjr.githubuserapp.databinding.ActivityDetailUserBinding
+import com.nuryadincjr.githubuserapp.util.Constant.Color.BLUE_GRAY
+import com.nuryadincjr.githubuserapp.util.Constant.Color.RED
 import com.nuryadincjr.githubuserapp.util.Constant.DATA_USER
 import com.nuryadincjr.githubuserapp.util.Constant.TAB_TITLES
 import com.nuryadincjr.githubuserapp.util.factory.ViewModelFactory
@@ -38,36 +42,21 @@ class DetailUserActivity : AppCompatActivity() {
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = intent.getParcelableExtra<Users>(DATA_USER)
-        val login = user?.login.toString()
-        val colorRed = ColorStateList.valueOf(resources.getColor(R.color.red))
-        val colorBlueGray = ColorStateList.valueOf(resources.getColor(R.color.blue_gray_secondary))
+        val user = intent.getParcelableExtra<Users>(DATA_USER) as Users
+        val login = user.login.toString()
 
-        mainViewModel.apply {
-            if (user != null) setUser(user)
-            getUser().observe(this@DetailUserActivity) {
-                if (it != null) sectionsPager(it)
-                setUserData(it)
-            }
+        val colorRed: ColorStateList
+        val colorBlueGray: ColorStateList
 
-            isUserFavorite(login).observe(this@DetailUserActivity) {
-                binding.floatingActionButton.backgroundTintList = if (it) colorRed else colorBlueGray
-            }
-
-            binding.floatingActionButton.apply {
-                setOnClickListener {
-                    isUserFavorite(login).observe(this@DetailUserActivity) {
-                        backgroundTintList = if (it) {
-                            deleteFavorite(login)
-                            colorBlueGray
-                        } else {
-                            insertFavorite(user!!)
-                            colorRed
-                        }
-                    }
-                }
-            }
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            colorRed = ColorStateList.valueOf(resources.getColor(BLUE_GRAY.value, theme))
+            colorBlueGray = ColorStateList.valueOf(resources.getColor(RED.value, theme))
+        } else {
+            colorRed = ColorStateList.valueOf(RED.value)
+            colorBlueGray = ColorStateList.valueOf(BLUE_GRAY.value)
         }
+
+        onSubscribeViewModel(user, login, colorRed, colorBlueGray)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -101,6 +90,40 @@ class DetailUserActivity : AppCompatActivity() {
                     tab.orCreateBadge.number = user.followers ?: 0
                 } else tab.orCreateBadge.number = user.following ?: 0
             }.attach()
+        }
+    }
+
+    private fun onSubscribeViewModel(
+        user: Users,
+        login: String,
+        colorRed: ColorStateList,
+        colorBlueGray: ColorStateList
+    ) {
+        mainViewModel.apply {
+            setUser(user)
+            getUser().observe(this@DetailUserActivity) {
+                if (it != null) sectionsPager(it)
+                setUserData(it)
+            }
+
+            isUserFavorite(login).observe(this@DetailUserActivity) {
+                binding.floatingActionButton.backgroundTintList =
+                    if (it) colorRed else colorBlueGray
+            }
+
+            binding.floatingActionButton.apply {
+                setOnClickListener {
+                    isUserFavorite(login).observe(this@DetailUserActivity) {
+                        backgroundTintList = if (it) {
+                            deleteFavorite(login)
+                            colorBlueGray
+                        } else {
+                            insertFavorite(user)
+                            colorRed
+                        }
+                    }
+                }
+            }
         }
     }
 
