@@ -49,8 +49,8 @@ class DetailUserActivity : AppCompatActivity() {
         val colorBlueGray: ColorStateList
 
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            colorRed = ColorStateList.valueOf(resources.getColor(BLUE_GRAY.value, theme))
-            colorBlueGray = ColorStateList.valueOf(resources.getColor(RED.value, theme))
+            colorRed = ColorStateList.valueOf(resources.getColor(R.color.red, theme))
+            colorBlueGray = ColorStateList.valueOf(resources.getColor(R.color.blue_gray_accent, theme))
         } else {
             colorRed = ColorStateList.valueOf(RED.value)
             colorBlueGray = ColorStateList.valueOf(BLUE_GRAY.value)
