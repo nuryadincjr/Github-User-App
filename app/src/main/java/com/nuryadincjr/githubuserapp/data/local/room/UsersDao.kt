@@ -10,7 +10,7 @@ import com.nuryadincjr.githubuserapp.data.local.entity.UsersEntity
 @Dao
 interface UsersDao {
 
-    @Query("SELECT * FROM user where name = 1")
+    @Query("SELECT * FROM user ORDER BY name")
     fun getUsersFavorite(): LiveData<List<UsersEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
